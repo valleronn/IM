@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://foobar.com"
+           xmlns="http://foobar.com"
+           elementFormDefault="qualified">
+
+    <xs:element name="message">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="messageID" type="xs:long"/>
+                <xs:element name="status" type="xs:int"/>
+                <xs:element name="type" type="xs:string"/>
+                <xs:element name="from" type="xs:int"/>
+                <xs:element name="to" type="xs:int"/>
+                <xs:element name="body" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
