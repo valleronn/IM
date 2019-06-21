@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="700.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nc.view.AuthDialog">
+<AnchorPane prefHeight="700.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nc.view.LoginDialog">
    <children>
       <Label alignment="CENTER" text="Welcome To Messenger" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0">
          <font>
@@ -32,7 +32,7 @@
                   <Font name="Arial" size="18.0" />
                </font>
             </Label>
-            <TextField GridPane.columnIndex="1">
+            <TextField fx:id="loginField" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets bottom="10.0" />
                </GridPane.margin>
@@ -42,20 +42,20 @@
                   <Font name="Arial" size="18.0" />
                </font>
             </Label>
-            <PasswordField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
       <HBox AnchorPane.bottomAnchor="250.0" AnchorPane.rightAnchor="40.0">
          <children>
-            <Label text="Not registered click ">
+            <Label text="Not registered? click ">
                <HBox.margin>
                   <Insets top="4.0" />
                </HBox.margin>
             </Label>
-            <Hyperlink prefHeight="8.0" prefWidth="40.0" text="here" />
+            <Hyperlink fx:id="clickHereLink" onAction="#clickHereHandler" prefHeight="8.0" prefWidth="40.0" text="here" />
          </children>
       </HBox>
-      <Button mnemonicParsing="false" text="Login" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0">
+      <Button fx:id="loginButton" mnemonicParsing="false" onAction="#signInHandler" text="Sign In" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0">
          <font>
             <Font name="Arial" size="15.0" />
          </font>

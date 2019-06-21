@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -33,7 +34,7 @@
                         <Font name="Arial" size="18.0" />
                     </font>
                 </Label>
-                <TextField GridPane.columnIndex="1">
+                <TextField fx:id="loginField" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets bottom="10.0" />
                     </GridPane.margin>
@@ -43,7 +44,7 @@
                         <Font name="Arial" size="18.0" />
                     </font>
                 </Label>
-                <PasswordField GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin></PasswordField>
@@ -52,14 +53,14 @@
                   <Font name="Arial" size="18.0" />
                </font>
             </Label>
-            <PasswordField GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <PasswordField fx:id="repeatPasswordField" onAction="#signUpHandler" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets top="10.0" />
                </GridPane.margin>
             </PasswordField>
             </children>
         </GridPane>
-        <Button mnemonicParsing="false" text="Register" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0">
+        <Button mnemonicParsing="false" onAction="#signUpHandler" text="Sign Up" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0">
             <font>
                 <Font name="Arial" size="15.0" />
             </font>
