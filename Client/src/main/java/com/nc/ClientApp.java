@@ -2,13 +2,17 @@ package com.nc;
 
 import com.nc.model.users.Admin;
 import com.nc.model.users.User;
+import com.nc.view.AddContactsDialog;
 import com.nc.view.LoginDialog;
 import com.nc.view.MessengerWindow;
 import com.nc.view.RegisterDialog;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,13 +26,31 @@ public class ClientApp extends Application {
 
     private Stage primaryStage;
     private User admin;
+    private ObservableList<User> users = FXCollections.observableArrayList();
+    private ObservableList<User> myContacts = FXCollections.observableArrayList();
 
     public ClientApp() {
         admin = new Admin(1, "admin", "Administrator", "admin", new Date());
+        users.add(new User(3, "user2", "User 2", "user", new Date()));
+        users.add(new User(4, "user3", "User 3", "user", new Date()));
+        users.add(new User(5, "user4", "User 4", "user", new Date()));
+
     }
 
     public User getAdmin() {
         return admin;
+    }
+
+    public ObservableList<User> getUsers() {
+        return users;
+    }
+
+    public ObservableList<User> getMyContacts() {
+        return myContacts;
+    }
+
+    public void addAContactToMyContactList(User contact) {
+        myContacts.add(contact);
     }
 
 
@@ -76,12 +98,38 @@ public class ClientApp extends Application {
             Scene scene = new Scene(messengerWindow);
             primaryStage.setScene(scene);
             MessengerWindow controller = loader.getController();
+            controller.setClientApp(this);
             controller.setUser(user);
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public void addContactsDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(ClientApp.class.getResource("view/AddContactsDialog.fxml"));
+            AnchorPane addContactsDialog = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Add a new contact");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+
+            Scene scene = new Scene(addContactsDialog);
+            dialogStage.setScene(scene);
+
+            AddContactsDialog controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setClientApp(this);
+            dialogStage.showAndWait();
+            //return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //return false;
+        }
     }
 
     public static void main(String[] args) {

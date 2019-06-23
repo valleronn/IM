@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -18,7 +17,7 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <ListView prefHeight="679.0" prefWidth="395.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                                    <ListView fx:id="myChatList" prefHeight="679.0" prefWidth="395.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
                                     <HBox prefHeight="50.0" prefWidth="400.0" spacing="220.0">
                                        <children>
                                           <Label text="Recent chats">
@@ -40,11 +39,11 @@
                               </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Contacts">
+                      <Tab fx:id="contactsTab" text="Contacts">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <ListView prefHeight="679.0" prefWidth="395.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+                                    <ListView fx:id="myContactsList" prefHeight="679.0" prefWidth="395.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
                                     <HBox prefHeight="50.0" prefWidth="400.0" spacing="200.0">
                                        <children>
                                           <Label text="My Contacts">
@@ -52,7 +51,7 @@
                                                 <Insets top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Button mnemonicParsing="false" text="+ Contact">
+                                          <Button mnemonicParsing="false" onAction="#addContactsHandler" text="+ Contact">
                                              <HBox.margin>
                                                 <Insets />
                                              </HBox.margin>
@@ -72,12 +71,12 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <Label text="Contact Name" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0" />
-                  <TextArea prefHeight="650.0" prefWidth="400.0" AnchorPane.topAnchor="80.0" />
+                  <Label fx:id="contactName" text="Contact Name" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0" />
+                  <TextArea fx:id="chatTextArea" prefHeight="650.0" prefWidth="400.0" AnchorPane.topAnchor="80.0" />
                   <HBox prefHeight="70.0" prefWidth="400.0" spacing="18.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0">
                      <children>
-                        <TextField prefHeight="50.0" prefWidth="300.0" />
-                        <Button mnemonicParsing="false" text="Send">
+                        <TextField fx:id="inputMessageTextField" prefHeight="50.0" prefWidth="300.0" />
+                        <Button fx:id="sendMessageButton" mnemonicParsing="false" onAction="#sendMessageHandler" text="Send">
                            <HBox.margin>
                               <Insets top="10.0" />
                            </HBox.margin>
