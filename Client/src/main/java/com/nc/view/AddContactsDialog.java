@@ -37,7 +37,7 @@ public class AddContactsDialog {
             okClicked = true;
             ObservableList<User> selectedContacts =  contactsList.getSelectionModel().getSelectedItems();
             for (User contact: selectedContacts) {
-                clientApp.addAContactToMyContactList(contact);
+                clientApp.getMyContacts().add(contact);
             }
             dialogStage.close();
     }

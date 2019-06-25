@@ -28,6 +28,8 @@ public class ClientApp extends Application {
     private User admin;
     private ObservableList<User> users = FXCollections.observableArrayList();
     private ObservableList<User> myContacts = FXCollections.observableArrayList();
+    private ObservableList<User> myChatContacts = FXCollections.observableArrayList();
+
 
     public ClientApp() {
         admin = new Admin(1, "admin", "Administrator", "admin", new Date());
@@ -49,10 +51,9 @@ public class ClientApp extends Application {
         return myContacts;
     }
 
-    public void addAContactToMyContactList(User contact) {
-        myContacts.add(contact);
+    public ObservableList<User> getMyChatContacts() {
+        return myChatContacts;
     }
-
 
     @Override
     public void start(Stage primaryStage) {

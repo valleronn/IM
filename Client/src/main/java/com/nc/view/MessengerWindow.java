@@ -12,7 +12,7 @@ public class MessengerWindow {
     @FXML
     private Label fullName;
     @FXML
-    private Label contactName;
+    private Label contactNameLabel;
     @FXML
     private TextArea chatTextArea;
     @FXML
@@ -25,8 +25,6 @@ public class MessengerWindow {
     private ListView<User> myChatList;
     private User user;
     private ClientApp clientApp;
-    private List<String> messageList = new LinkedList<>();
-
 
     public void setUser(User user) {
         this.user = user;
@@ -36,6 +34,7 @@ public class MessengerWindow {
     public void setClientApp(ClientApp clientApp) {
         this.clientApp = clientApp;
         myContactsList.setItems(clientApp.getMyContacts());
+        myChatList.setItems(clientApp.getMyChatContacts());
     }
 
     @FXML
@@ -44,26 +43,43 @@ public class MessengerWindow {
         myContactsList.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showChatDetails(newValue)
         );
+        myChatList.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> showChatDetails(newValue)
+        );
     }
 
     public void showChatDetails(User contactUser) {
         if (contactUser != null) {
-            contactName.setText(contactUser.getFullName());
+            contactNameLabel.setText(contactUser.getFullName());
+            messageProcessor(contactUser);
         } else {
-            contactName.setText("");
+            contactNameLabel.setText("");
             chatTextArea.setText("");
+        }
+    }
+
+    private void messageProcessor(User selectedContact) {
+        String computedMessage = "";
+        for (String message: selectedContact.getMessageList()) {
+            computedMessage += message + "\n";
+        }
+        chatTextArea.setText(computedMessage);
+    }
+
+    private void addAUserToMyChatList(User contactedUser) {
+        if (contactedUser.getMessageList() != null) {
+            clientApp.getMyChatContacts().add(contactedUser);
         }
     }
 
     @FXML
     private void sendMessageHandler() {
-        messageList.add(inputMessageTextField.getText());
-        String computedMessage = "";
-        for (String message: messageList) {
-            computedMessage += message + "\n";
+        User selectedContact = myContactsList.getSelectionModel().getSelectedItem();
+        selectedContact.getMessageList().add(inputMessageTextField.getText());
+        messageProcessor(selectedContact);
+        if (!clientApp.getMyChatContacts().contains(selectedContact)) {
+            addAUserToMyChatList(selectedContact);
         }
-        chatTextArea.setText(computedMessage);
-
         inputMessageTextField.setText("");
     }
 

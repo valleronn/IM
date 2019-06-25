@@ -1,6 +1,8 @@
 package com.nc.model.users;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class User {
     private int id;
@@ -9,6 +11,7 @@ public class User {
     private String password;
     private Date regDate;
     private boolean active;
+    private List<String> messageList = new LinkedList<>();
 
     public User() {
     }
@@ -68,5 +71,18 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public List<String> getMessageList() {
+        return messageList;
+    }
+
+    public void setMessageList(List<String> messageList) {
+        this.messageList = messageList;
+    }
+
+    @Override
+    public String toString() {
+        return getFullName();
     }
 }
