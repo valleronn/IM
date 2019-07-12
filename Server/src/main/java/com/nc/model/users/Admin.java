@@ -8,8 +8,8 @@ public class Admin extends User {
         super();
     }
 
-    public Admin(int id, String nickName, String fullName, String password, Date regDate) {
-        super(id, nickName, fullName, password, regDate);
+    public Admin(String login, String password, Date regDate) {
+        super(login, password, regDate);
     }
 
     public void changeProfile(int userId) {

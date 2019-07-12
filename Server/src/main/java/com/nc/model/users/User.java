@@ -1,12 +1,14 @@
 package com.nc.model.users;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+@XmlRootElement
 public class User {
-    private int id;
-    private String nickName;
+    private String login;
     private String fullName;
     private String password;
     private Date regDate;
@@ -16,29 +18,19 @@ public class User {
     public User() {
     }
 
-    public User(int id, String nickName, String fullName, String password, Date regDate) {
-        this.id = id;
-        this.nickName = nickName;
-        this.fullName = fullName;
+    public User(String login, String password, Date regDate) {
+        this.login = login;
         this.password = password;
         this.regDate = regDate;
         this.active = false;
     }
 
-    public int getId() {
-        return id;
+    public String getLogin() {
+        return login;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getFullName() {
@@ -83,6 +75,6 @@ public class User {
 
     @Override
     public String toString() {
-        return getFullName();
+        return getLogin();
     }
 }

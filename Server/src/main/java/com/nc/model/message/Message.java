@@ -46,13 +46,13 @@ public class Message {
     @XmlElement(required = true)
     protected long messageID;
     @XmlElement(required = true)
-    protected int status;
+    protected String status;
     @XmlElement(required = true)
-    protected String type;
+    protected MessageType type;
     @XmlElement(required = true)
-    protected int from;
+    protected String from;
     @XmlElement(required = true)
-    protected int to;
+    protected String to;
     @XmlElement(required = true)
     protected String body;
 
@@ -76,7 +76,7 @@ public class Message {
      * Gets the value of the status property.
      * 
      */
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -84,7 +84,7 @@ public class Message {
      * Sets the value of the status property.
      * 
      */
-    public void setStatus(int value) {
+    public void setStatus(String value) {
         this.status = value;
     }
 
@@ -96,7 +96,7 @@ public class Message {
      *     {@link String }
      *     
      */
-    public String getType() {
+    public MessageType getType() {
         return type;
     }
 
@@ -108,7 +108,7 @@ public class Message {
      *     {@link String }
      *     
      */
-    public void setType(String value) {
+    public void setType(MessageType value) {
         this.type = value;
     }
 
@@ -116,7 +116,7 @@ public class Message {
      * Gets the value of the from property.
      * 
      */
-    public int getFrom() {
+    public String getFrom() {
         return from;
     }
 
@@ -124,7 +124,7 @@ public class Message {
      * Sets the value of the from property.
      * 
      */
-    public void setFrom(int value) {
+    public void setFrom(String value) {
         this.from = value;
     }
 
@@ -132,7 +132,7 @@ public class Message {
      * Gets the value of the to property.
      * 
      */
-    public int getTo() {
+    public String getTo() {
         return to;
     }
 
@@ -140,7 +140,7 @@ public class Message {
      * Sets the value of the to property.
      * 
      */
-    public void setTo(int value) {
+    public void setTo(String value) {
         this.to = value;
     }
 
