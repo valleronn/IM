@@ -1,14 +1,17 @@
 package com.nc.view;
 
 import com.nc.ClientApp;
+import com.nc.controller.ClientController;
+import com.nc.controller.MessageListener;
+import com.nc.controller.UserStatusListener;
 import com.nc.model.users.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.IOException;
 
-public class MessengerWindow {
+
+public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private Label fullName;
     @FXML
@@ -25,16 +28,24 @@ public class MessengerWindow {
     private ListView<User> myChatList;
     private User user;
     private ClientApp clientApp;
+    private ClientController client;
 
     public void setUser(User user) {
         this.user = user;
-        fullName.setText(user.getFullName());
+        fullName.setText(user.getLogin());
     }
 
     public void setClientApp(ClientApp clientApp) {
         this.clientApp = clientApp;
         myContactsList.setItems(clientApp.getMyContacts());
         myChatList.setItems(clientApp.getMyChatContacts());
+    }
+
+    public void setClientController(ClientController client) {
+        this.client = client;
+        this.client.addUserStatusListener(this);
+        this.client.addMessageListener(this);
+        client.messageReader();
     }
 
     @FXML
@@ -64,6 +75,12 @@ public class MessengerWindow {
             computedMessage += message + "\n";
         }
         chatTextArea.setText(computedMessage);
+        try {
+            client.sendChatMessage(selectedContact.getLogin(), inputMessageTextField.getText());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //sendMessageProcessor(computedMessage);
     }
 
     private void addAUserToMyChatList(User contactedUser) {
@@ -86,5 +103,20 @@ public class MessengerWindow {
     @FXML
     private void addContactsHandler() {
         clientApp.addContactsDialog();
+    }
+
+    @Override
+    public void online(User user) {
+        clientApp.getUsers().add(user);
+    }
+
+    @Override
+    public void offline(User user) {
+        clientApp.getUsers().remove(user);
+    }
+
+    @Override
+    public void onMessage(String from, String body) {
+        chatTextArea.setText(body);
     }
 }

@@ -1,5 +1,6 @@
 package com.nc;
 
+import com.nc.controller.ClientController;
 import com.nc.model.users.Admin;
 import com.nc.model.users.User;
 import com.nc.view.AddContactsDialog;
@@ -30,12 +31,16 @@ public class ClientApp extends Application {
     private ObservableList<User> myContacts = FXCollections.observableArrayList();
     private ObservableList<User> myChatContacts = FXCollections.observableArrayList();
 
+    private String serverName = "localhost";
+    private int port = 4444;
+    private ClientController client;
 
     public ClientApp() {
-        admin = new Admin(1, "admin", "Administrator", "admin", new Date());
-        users.add(new User(3, "user2", "User 2", "user", new Date()));
-        users.add(new User(4, "user3", "User 3", "user", new Date()));
-        users.add(new User(5, "user4", "User 4", "user", new Date()));
+        admin = new Admin("admin", "admin", new Date());
+        client = new ClientController(serverName, port);
+//        users.add(new User("user2", "user", new Date()));
+//        users.add(new User("user3", "user", new Date()));
+//        users.add(new User("user4", "user", new Date()));
 
     }
 
@@ -86,6 +91,7 @@ public class ClientApp extends Application {
             primaryStage.show();
             RegisterDialog controller = loader.getController();
             controller.setClientApp(this);
+            controller.setClientController(client);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,7 +107,9 @@ public class ClientApp extends Application {
             MessengerWindow controller = loader.getController();
             controller.setClientApp(this);
             controller.setUser(user);
+            controller.setClientController(client);
             primaryStage.show();
+            //clientController.run();
         } catch (IOException e) {
             e.printStackTrace();
         }
