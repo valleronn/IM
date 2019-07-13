@@ -1,7 +1,6 @@
 package com.nc.view;
 
 import com.nc.ClientApp;
-import com.nc.controller.UserStatusListener;
 import com.nc.model.users.User;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

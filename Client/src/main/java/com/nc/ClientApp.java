@@ -64,6 +64,15 @@ public class ClientApp extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         showLoginDialog();
+        primaryStage.setOnCloseRequest(event -> {
+            try {
+                client.logoff();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                System.exit(0);
+            }
+        });
     }
 
     private void showLoginDialog() {
@@ -109,7 +118,6 @@ public class ClientApp extends Application {
             controller.setUser(user);
             controller.setClientController(client);
             primaryStage.show();
-            //clientController.run();
         } catch (IOException e) {
             e.printStackTrace();
         }

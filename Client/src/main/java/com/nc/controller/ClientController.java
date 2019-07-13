@@ -28,23 +28,6 @@ public class ClientController {
         messageController = new MessageController();
     }
 
-
-
-    public void run() throws IOException {
-        if (!connect()) {
-            System.err.println("Connect failed");
-        } else {
-            System.out.println("Connect successful");
-            /*if (login("guest", "guest")) {
-                System.out.println("Login successful");
-                //client.msg("val", "hello world");
-            } else {
-                System.err.println("Login failed");
-            }*/
-            //client.logoff();
-        }
-    }
-
     public boolean connect() {
         try {
             this.socket = new Socket(serverName, serverPort);
@@ -59,10 +42,11 @@ public class ClientController {
         return false;
     }
 
-    public void sendChatMessage(String sendTo, String msgBody) throws IOException {
+    public void sendChatMessage(String sendTo, String sentFrom, String msgBody) throws IOException {
         Message chatMessage = new Message();
         chatMessage.setType(MessageType.MSG);
         chatMessage.setTo(sendTo);
+        chatMessage.setFrom(sentFrom);
         chatMessage.setBody(msgBody);
         outputStream.write(messageController.createMessage(chatMessage).getBytes());
     }
@@ -79,7 +63,6 @@ public class ClientController {
         String response = messageController.extractMessage(bufferedIn.readLine()).getStatus();
         System.out.println("Response line: " + response);
         if ("Registration successful".equalsIgnoreCase(response)) {
-            //messageReader();
             result = true;
         }
         return result;
@@ -98,11 +81,18 @@ public class ClientController {
         System.out.println("Response line: " + response);
 
         if ("Login successful".equalsIgnoreCase(response)) {
-            messageReader();
+            //messageReader();
             result = true;
         }
         //socket.close();
         return result;
+    }
+
+    public void logoff() throws IOException {
+        Message logoffMessage = new Message();
+        logoffMessage.setType(MessageType.LOGOFF);
+        String cmd = messageController.createMessage(logoffMessage);
+        outputStream.write(cmd.getBytes());
     }
 
     public void messageReader() {

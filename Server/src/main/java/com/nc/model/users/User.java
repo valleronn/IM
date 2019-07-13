@@ -1,12 +1,10 @@
 package com.nc.model.users;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
-@XmlRootElement
 public class User {
     private String login;
     private String fullName;
@@ -76,5 +74,18 @@ public class User {
     @Override
     public String toString() {
         return getLogin();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(login, user.login);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(login);
     }
 }

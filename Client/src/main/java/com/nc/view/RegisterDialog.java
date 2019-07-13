@@ -57,6 +57,5 @@ public class RegisterDialog {
         String nickName = loginField.getText();
         String pass = passwordField.getText();
         user = new User(nickName, pass, new Date());
-        clientApp.getUsers().add(user);
     }
 }

@@ -75,7 +75,7 @@
                   <TextArea fx:id="chatTextArea" prefHeight="650.0" prefWidth="400.0" AnchorPane.topAnchor="80.0" />
                   <HBox prefHeight="70.0" prefWidth="400.0" spacing="18.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0">
                      <children>
-                        <TextField fx:id="inputMessageTextField" prefHeight="50.0" prefWidth="300.0" />
+                        <TextField fx:id="inputMessageTextField" prefHeight="50.0" prefWidth="300.0" onAction="#sendMessageHandler" />
                         <Button fx:id="sendMessageButton" mnemonicParsing="false" onAction="#sendMessageHandler" text="Send">
                            <HBox.margin>
                               <Insets top="10.0" />

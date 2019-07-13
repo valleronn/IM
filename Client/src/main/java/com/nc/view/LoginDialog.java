@@ -2,6 +2,7 @@ package com.nc.view;
 
 import com.nc.ClientApp;
 import com.nc.controller.ClientController;
+import com.nc.model.users.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
@@ -9,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class LoginDialog {
     @FXML
@@ -22,6 +24,7 @@ public class LoginDialog {
 
     private ClientApp clientApp;
     private ClientController client;
+    private User user;
 
     public LoginDialog() {
         client = new ClientController("localhost", 4444);
@@ -42,7 +45,8 @@ public class LoginDialog {
             boolean loginPassed = client.login(loginField.getText(), passwordField.getText());
             if (loginPassed) {
                 System.out.println("Logged in successfully");
-                clientApp.showMessengerWindow(clientApp.getAdmin());
+                reCreateExistingUser();
+                clientApp.showMessengerWindow(user);
             } else {
                 System.out.println("User or password is incorrect");
             }
@@ -66,5 +70,11 @@ public class LoginDialog {
     @FXML
     private void clickHereHandler() {
         clientApp.showRegisterDialog();
+    }
+
+    private void reCreateExistingUser() {
+        String nickName = loginField.getText();
+        String pass = passwordField.getText();
+        user = new User(nickName, pass, new Date());
     }
 }

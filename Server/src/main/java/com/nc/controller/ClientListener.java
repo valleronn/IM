@@ -95,7 +95,7 @@ public class ClientListener extends Thread {
             }
         }
         clientSocket.close();
-        System.out.println(getUser().getLogin() + " has been disconnected");
+        System.out.println(getUser().getLogin() + " has disconnected");
     }
 
     private void handleRegister(OutputStream outputStream, Message message) throws IOException {
@@ -123,28 +123,29 @@ public class ClientListener extends Thread {
         String login = message.getFrom();
         String password = message.getBody();
 
-        if (login.equals(server.getUser().getLogin())
-                && password.equals(server.getUser().getPassword()) ||
-                login.equals("val") && password.equals("val")) {
-            Message msg = new Message();
-            msg.setStatus("Login successful");
-            outputStream.write(messageController.createMessage(msg).getBytes());
-            System.out.println("User logged in successfully: " + login);
+        for(User user: server.getUsers()) {
+            if (login.equals((user.getLogin()))
+                && password.equals(user.getPassword())) {
+                Message msg = new Message();
+                msg.setStatus("Login successful");
+                outputStream.write(messageController.createMessage(msg).getBytes());
+                System.out.println("User logged in successfully: " + login);
 
-            List<ClientListener> listenerList = server.getListenerList();
-            sendCurrUserAllOtherLogins(login, listenerList);
-            sendOnlineUsersCurrUserStatus(login, listenerList);
-        } else {
-            Message msg = new Message();
-            msg.setStatus("Error login");
-            outputStream.write(messageController.createMessage(msg).getBytes());
-            System.err.println("Login failed for " + login);
+                List<ClientListener> listenerList = server.getListenerList();
+                sendCurrUserAllOtherLogins(login, listenerList);
+                sendOnlineUsersCurrUserStatus(login, listenerList);
+            } else {
+                Message msg = new Message();
+                msg.setStatus("Error login");
+                outputStream.write(messageController.createMessage(msg).getBytes());
+                System.err.println("Login failed for " + login);
+            }
         }
     }
 
     private void sendCurrUserAllOtherLogins(String login, List<ClientListener> listenerList) throws IOException {
         for(ClientListener listener: listenerList) {
-            if (listener.getUser().getLogin() != null) {
+            if (listener.getUser() != null) {
                 if (!login.equals(listener.getUser().getLogin())) {
                     Message onlineMsg1 = new Message();
                     onlineMsg1.setStatus("online");
@@ -160,9 +161,10 @@ public class ClientListener extends Thread {
         Message onlineMsg = new Message();
         onlineMsg.setStatus("online");
         onlineMsg.setType(MessageType.MSG);
-        onlineMsg.setFrom(getUser().getLogin());
+        //onlineMsg.setFrom(getUser().getLogin());
+        onlineMsg.setFrom(login);
         for(ClientListener listener: listenerList) {
-            if (!login.equals(listener.getUser().getLogin())) {
+            if (listener.getUser() != null && !login.equals(listener.getUser().getLogin())) {
                 listener.send(onlineMsg);
             }
         }

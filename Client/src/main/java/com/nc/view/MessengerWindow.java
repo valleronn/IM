@@ -5,6 +5,7 @@ import com.nc.controller.ClientController;
 import com.nc.controller.MessageListener;
 import com.nc.controller.UserStatusListener;
 import com.nc.model.users.User;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -61,11 +62,17 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
 
     public void showChatDetails(User contactUser) {
         if (contactUser != null) {
-            contactNameLabel.setText(contactUser.getFullName());
+            inputMessageTextField.setVisible(true);
+            chatTextArea.setVisible(true);
+            sendMessageButton.setVisible(true);
+            contactNameLabel.setText(contactUser.getLogin());
             messageProcessor(contactUser);
         } else {
             contactNameLabel.setText("");
             chatTextArea.setText("");
+            inputMessageTextField.setVisible(false);
+            chatTextArea.setVisible(false);
+            sendMessageButton.setVisible(false);
         }
     }
 
@@ -75,12 +82,6 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             computedMessage += message + "\n";
         }
         chatTextArea.setText(computedMessage);
-        try {
-            client.sendChatMessage(selectedContact.getLogin(), inputMessageTextField.getText());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //sendMessageProcessor(computedMessage);
     }
 
     private void addAUserToMyChatList(User contactedUser) {
@@ -90,10 +91,17 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     }
 
     @FXML
-    private void sendMessageHandler() {
+    private void sendMessageHandler(ActionEvent ae) {
         User selectedContact = myContactsList.getSelectionModel().getSelectedItem();
         selectedContact.getMessageList().add(inputMessageTextField.getText());
         messageProcessor(selectedContact);
+        try {
+            if (inputMessageTextField.getText() != null) {
+                client.sendChatMessage(selectedContact.getLogin(), user.getLogin(), inputMessageTextField.getText());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (!clientApp.getMyChatContacts().contains(selectedContact)) {
             addAUserToMyChatList(selectedContact);
         }
@@ -117,6 +125,10 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
 
     @Override
     public void onMessage(String from, String body) {
-        chatTextArea.setText(body);
+        User selectedContact = myContactsList.getSelectionModel().getSelectedItem();
+        if (selectedContact != null) {
+            selectedContact.getMessageList().add(from + ": " + body);
+            messageProcessor(selectedContact);
+        }
     }
 }
