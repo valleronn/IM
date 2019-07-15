@@ -15,16 +15,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.Date;
 
 /**
- * Hello world!
- *
+ * Client main class of Messenger application.
  */
 public class ClientApp extends Application {
-
     private Stage primaryStage;
     private User admin;
     private ObservableList<User> users = FXCollections.observableArrayList();
@@ -38,10 +35,6 @@ public class ClientApp extends Application {
     public ClientApp() {
         admin = new Admin("admin", "admin", new Date());
         client = new ClientController(serverName, port);
-//        users.add(new User("user2", "user", new Date()));
-//        users.add(new User("user3", "user", new Date()));
-//        users.add(new User("user4", "user", new Date()));
-
     }
 
     public User getAdmin() {
@@ -63,6 +56,7 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        this.primaryStage.setTitle("Messenger");
         showLoginDialog();
         primaryStage.setOnCloseRequest(event -> {
             try {
@@ -75,6 +69,9 @@ public class ClientApp extends Application {
         });
     }
 
+    /**
+     * Initializes Login dialog.
+     */
     private void showLoginDialog() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(ClientApp.class.getResource("view/LoginDialog.fxml"));
@@ -85,11 +82,15 @@ public class ClientApp extends Application {
             primaryStage.show();
             LoginDialog controller = loader.getController();
             controller.setClientApp(this);
+            controller.setClientController(client);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Initializes Register dialog.
+     */
     public void showRegisterDialog() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(ClientApp.class.getResource("view/RegisterDialog.fxml"));
@@ -106,6 +107,9 @@ public class ClientApp extends Application {
         }
     }
 
+    /**
+     * Initializes main window.
+     */
     public void showMessengerWindow(User user) {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -124,7 +128,10 @@ public class ClientApp extends Application {
 
     }
 
-    public void addContactsDialog() {
+    /**
+     * Shows a dialog to add new contacts.
+     */
+    public boolean addContactsDialog() {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(ClientApp.class.getResource("view/AddContactsDialog.fxml"));
@@ -142,10 +149,10 @@ public class ClientApp extends Application {
             controller.setDialogStage(dialogStage);
             controller.setClientApp(this);
             dialogStage.showAndWait();
-            //return controller.isOkClicked();
+            return controller.isOkClicked();
         } catch (IOException e) {
             e.printStackTrace();
-            //return false;
+            return false;
         }
     }
 

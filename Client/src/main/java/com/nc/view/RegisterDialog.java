@@ -10,6 +10,9 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.util.Date;
 
+/**
+ * Represent RegisterDialog class.
+ */
 public class RegisterDialog {
     @FXML
     private TextField loginField;
@@ -30,6 +33,10 @@ public class RegisterDialog {
         this.client = client;
     }
 
+    /**
+     * SignUp button click event.
+     * @throws IOException
+     */
     @FXML
     private void signUpHandler() throws IOException {
         if (client.connect()) {
@@ -45,6 +52,10 @@ public class RegisterDialog {
         }
     }
 
+    /**
+     * Checks input validation.
+     * @return true or false
+     */
     private boolean isInputValid() {
         boolean result = false;
         if (passwordField.getText().equals(repeatPasswordField.getText())) {
@@ -53,6 +64,9 @@ public class RegisterDialog {
         return result;
     }
 
+    /**
+     * Creates a new user.
+     */
     private void createNewUser() {
         String nickName = loginField.getText();
         String pass = passwordField.getText();

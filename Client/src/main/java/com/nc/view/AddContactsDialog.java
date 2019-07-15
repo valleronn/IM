@@ -7,6 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
+/**
+ * Represents AddContactsDialog class
+ */
 public class AddContactsDialog {
     @FXML
     private ListView contactsList;
@@ -28,10 +31,17 @@ public class AddContactsDialog {
 
     }
 
+    /**
+     * Returns true if Add clicked, otherwise false
+     * @return
+     */
     public boolean isOkClicked() {
         return okClicked;
     }
 
+    /**
+     * Add button click event
+     */
     @FXML
     private void AddContact() {
             okClicked = true;
@@ -42,6 +52,9 @@ public class AddContactsDialog {
             dialogStage.close();
     }
 
+    /**
+     * Cancel button click event
+     */
     @FXML
     private void cancel() {
         dialogStage.close();

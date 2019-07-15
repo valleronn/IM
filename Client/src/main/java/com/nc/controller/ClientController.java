@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Represents ClientController
+ */
 public class ClientController {
     private Socket socket;
     private String serverName;
@@ -28,6 +31,10 @@ public class ClientController {
         messageController = new MessageController();
     }
 
+    /**
+     * Connects to a server
+     * @return returns true or false
+     */
     public boolean connect() {
         try {
             this.socket = new Socket(serverName, serverPort);
@@ -42,6 +49,13 @@ public class ClientController {
         return false;
     }
 
+    /**
+     * Sends new message
+     * @param sendTo recipient
+     * @param sentFrom sender
+     * @param msgBody message body
+     * @throws IOException
+     */
     public void sendChatMessage(String sendTo, String sentFrom, String msgBody) throws IOException {
         Message chatMessage = new Message();
         chatMessage.setType(MessageType.MSG);
@@ -51,6 +65,13 @@ public class ClientController {
         outputStream.write(messageController.createMessage(chatMessage).getBytes());
     }
 
+    /**
+     * Registers new users, sends register message
+     * @param login login
+     * @param password password
+     * @return true or false
+     * @throws IOException
+     */
     public boolean register(String login, String password) throws IOException {
         boolean result = false;
         Message registerMessage = new Message();
@@ -68,6 +89,13 @@ public class ClientController {
         return result;
     }
 
+    /**
+     * Sends login message
+     * @param login login
+     * @param password password
+     * @return returns true or false
+     * @throws IOException
+     */
     public boolean login(String login, String password) throws IOException {
         boolean result = false;
         Message loginMessage = new Message();
@@ -79,15 +107,16 @@ public class ClientController {
 
         String response = messageController.extractMessage(bufferedIn.readLine()).getStatus();
         System.out.println("Response line: " + response);
-
         if ("Login successful".equalsIgnoreCase(response)) {
-            //messageReader();
             result = true;
         }
-        //socket.close();
         return result;
     }
 
+    /**
+     * Sends logoff message
+     * @throws IOException
+     */
     public void logoff() throws IOException {
         Message logoffMessage = new Message();
         logoffMessage.setType(MessageType.LOGOFF);
@@ -95,6 +124,9 @@ public class ClientController {
         outputStream.write(cmd.getBytes());
     }
 
+    /**
+     * Launches a new thread to read messages from server.
+     */
     public void messageReader() {
         Thread t = new Thread() {
             @Override
@@ -105,6 +137,9 @@ public class ClientController {
         t.start();
     }
 
+    /**
+     * Reads incoming messages from server
+     */
     private void readMessage() {
         try {
             String line;

@@ -8,10 +8,12 @@ import com.nc.model.users.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
 import java.io.IOException;
 
 
+/**
+ * Represents MessengerWindow class
+ */
 public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private Label fullName;
@@ -49,6 +51,9 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         client.messageReader();
     }
 
+    /**
+     * Specifies chat details during initialization
+     */
     @FXML
     private void initialize() {
         showChatDetails(null);
@@ -60,6 +65,10 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         );
     }
 
+    /**
+     * Shows chat details
+     * @param contactUser contactUser parameter
+     */
     public void showChatDetails(User contactUser) {
         if (contactUser != null) {
             inputMessageTextField.setVisible(true);
@@ -76,6 +85,10 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         }
     }
 
+    /**
+     * Displays input text on ChatTextArea
+     * @param selectedContact selectedContact parameter
+     */
     private void messageProcessor(User selectedContact) {
         String computedMessage = "";
         for (String message: selectedContact.getMessageList()) {
@@ -84,12 +97,20 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         chatTextArea.setText(computedMessage);
     }
 
+    /**
+     * Adds new user to a chat list.
+     * @param contactedUser contactedUser parameter
+     */
     private void addAUserToMyChatList(User contactedUser) {
         if (contactedUser.getMessageList() != null) {
             clientApp.getMyChatContacts().add(contactedUser);
         }
     }
 
+    /**
+     * Send button click event.
+     * @param ae
+     */
     @FXML
     private void sendMessageHandler(ActionEvent ae) {
         User selectedContact = myContactsList.getSelectionModel().getSelectedItem();
@@ -108,21 +129,38 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         inputMessageTextField.setText("");
     }
 
+    /**
+     * Add contacts button click event
+     */
     @FXML
     private void addContactsHandler() {
         clientApp.addContactsDialog();
     }
 
+    /**
+     * Add new user to a collection when online
+     * @param user
+     */
     @Override
     public void online(User user) {
         clientApp.getUsers().add(user);
     }
 
+    /**
+     * Removes a user from a collection when offline
+     * @param user
+     */
     @Override
     public void offline(User user) {
         clientApp.getUsers().remove(user);
     }
 
+    /**
+     * Adds input message into user's message list
+     * passes selected contact into messageProcessor
+     * @param from sender
+     * @param body message body
+     */
     @Override
     public void onMessage(String from, String body) {
         User selectedContact = myContactsList.getSelectionModel().getSelectedItem();

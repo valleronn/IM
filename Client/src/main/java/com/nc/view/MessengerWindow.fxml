@@ -25,7 +25,7 @@
                                                 <Insets top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Button mnemonicParsing="false" text="+ Chat">
+                                          <Button mnemonicParsing="false" text="+ Chat" visible="false">
                                              <HBox.margin>
                                                 <Insets />
                                              </HBox.margin>
