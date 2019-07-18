@@ -4,6 +4,7 @@ import com.nc.ClientApp;
 import com.nc.controller.ClientController;
 import com.nc.model.users.User;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import java.io.IOException;
@@ -17,6 +18,8 @@ public class LoginDialog {
     private TextField loginField;
     @FXML
     private PasswordField passwordField;
+    @FXML
+    private Label warningLabel;
     private ClientApp clientApp;
     private ClientController client;
     private User user;
@@ -40,18 +43,38 @@ public class LoginDialog {
      */
     @FXML
     private void signInHandler() throws IOException {
-        if (client.connect()) {
-            boolean loginPassed = client.login(loginField.getText(), passwordField.getText());
-            if (loginPassed) {
-                System.out.println("Logged in successfully");
-                reCreateExistingUser();
-                clientApp.showMessengerWindow(user);
+        if (isInputValid()) {
+            if (client.connect()) {
+                boolean loginPassed = client.login(loginField.getText(), passwordField.getText());
+                if (loginPassed) {
+                    System.out.println("Logged in successfully");
+                    reCreateExistingUser();
+                    clientApp.showMessengerWindow(user);
+                } else {
+                    warningLabel.setText("User or password is incorrect");
+                    warningLabel.setVisible(true);
+                }
             } else {
-                System.out.println("User or password is incorrect");
+                warningLabel.setText("Failed to login, check your connection and try again.");
+                warningLabel.setVisible(true);
             }
         } else {
-            System.err.println("Failed to connect");
+            warningLabel.setText("Login or password can't be empty.");
+            warningLabel.setVisible(true);
         }
+    }
+
+    /**
+     * Checks input validation.
+     * @return true or false
+     */
+    private boolean isInputValid() {
+        boolean result = true;
+        byte[] passwordFieldBytes = passwordField.getText().getBytes();
+        if (passwordFieldBytes.length == 0 || loginField.getText().equals("")) {
+            result = false;
+        }
+        return result;
     }
 
     /**

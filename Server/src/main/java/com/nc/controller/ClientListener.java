@@ -103,8 +103,13 @@ public class ClientListener extends Thread {
         String password = message.getBody();
         for(User user: server.getUsers()) {
             if (user.getLogin().equals(login)) {
-                System.err.println("User with this login already exists");
+                System.err.println("User " + login + " already exists");
+                Message msg = new Message();
+                msg.setStatus("Registration failed");
+                outputStream.write(messageController.createMessage(msg).getBytes());
+                server.removeListener(this);
                 clientSocket.close();
+                return;
             }
         }
         user = new User(login, password, new Date());
@@ -122,24 +127,29 @@ public class ClientListener extends Thread {
     private void handleLogin(OutputStream outputStream, Message message) throws IOException {
         String login = message.getFrom();
         String password = message.getBody();
-
+        boolean userExists = false;
         for(User user: server.getUsers()) {
             if (login.equals((user.getLogin()))
                 && password.equals(user.getPassword())) {
-                Message msg = new Message();
-                msg.setStatus("Login successful");
-                outputStream.write(messageController.createMessage(msg).getBytes());
-                System.out.println("User logged in successfully: " + login);
+                userExists = true;
+                this.user = user;
 
-                List<ClientListener> listenerList = server.getListenerList();
-                sendCurrUserAllOtherLogins(login, listenerList);
-                sendOnlineUsersCurrUserStatus(login, listenerList);
-            } else {
-                Message msg = new Message();
-                msg.setStatus("Error login");
-                outputStream.write(messageController.createMessage(msg).getBytes());
-                System.err.println("Login failed for " + login);
             }
+        }
+        if (userExists) {
+            Message msg = new Message();
+            msg.setStatus("Login successful");
+            outputStream.write(messageController.createMessage(msg).getBytes());
+            System.out.println("User logged in successfully: " + login);
+
+            List<ClientListener> listenerList = server.getListenerList();
+            sendCurrUserAllOtherLogins(login, listenerList);
+            sendOnlineUsersCurrUserStatus(login, listenerList);
+        } else {
+            Message msg = new Message();
+            msg.setStatus("Error login");
+            outputStream.write(messageController.createMessage(msg).getBytes());
+            System.err.println("Login failed for " + login);
         }
     }
 

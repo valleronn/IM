@@ -59,6 +59,11 @@
             </PasswordField>
             </children>
         </GridPane>
+      <Label fx:id="warningLabel" text="Label" textFill="#e40a0a" visible="false" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+         <font>
+            <Font name="Arial" size="15.0" />
+         </font>
+      </Label>
         <Button mnemonicParsing="false" onAction="#signUpHandler" text="Sign Up" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0">
             <font>
                 <Font name="Arial" size="15.0" />

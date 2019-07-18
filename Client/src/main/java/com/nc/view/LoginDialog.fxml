@@ -45,6 +45,11 @@
             <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
+      <Label fx:id="warningLabel" text="Label" textFill="#e40a0a" visible="false" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+         <font>
+            <Font name="Arial" size="15.0" />
+         </font>
+      </Label>
       <HBox AnchorPane.bottomAnchor="250.0" AnchorPane.rightAnchor="40.0">
          <children>
             <Label text="Not registered? click ">

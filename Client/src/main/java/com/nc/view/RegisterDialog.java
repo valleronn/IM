@@ -4,6 +4,7 @@ import com.nc.ClientApp;
 import com.nc.controller.ClientController;
 import com.nc.model.users.User;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -20,6 +21,8 @@ public class RegisterDialog {
     private PasswordField passwordField;
     @FXML
     private PasswordField repeatPasswordField;
+    @FXML
+    private Label warningLabel;
 
     private ClientApp clientApp;
     private ClientController client;
@@ -39,16 +42,23 @@ public class RegisterDialog {
      */
     @FXML
     private void signUpHandler() throws IOException {
-        if (client.connect()) {
-            boolean registerPassed = client.register(loginField.getText(), passwordField.getText());
-            if (isInputValid() && registerPassed) {
-                createNewUser();
-                clientApp.showMessengerWindow(user);
+        if (isInputValid()) {
+            if (client.connect()) {
+                boolean registerPassed = client.register(loginField.getText(), passwordField.getText());
+                if (registerPassed) {
+                    createNewUser();
+                    clientApp.showMessengerWindow(user);
+                } else {
+                    warningLabel.setText("Failed to register, login already in use.");
+                    warningLabel.setVisible(true);
+                }
             } else {
-                System.out.println("Something went wrong");
+                warningLabel.setText("Failed to register, check your connection and try again.");
+                warningLabel.setVisible(true);
             }
         } else {
-            System.err.println("Failed to connect");
+            warningLabel.setText("Entered password does not match.");
+            warningLabel.setVisible(true);
         }
     }
 
