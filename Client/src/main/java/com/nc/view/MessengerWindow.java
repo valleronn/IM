@@ -5,6 +5,7 @@ import com.nc.controller.ClientController;
 import com.nc.controller.MessageListener;
 import com.nc.controller.UserStatusListener;
 import com.nc.model.users.User;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -69,20 +70,31 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * Shows chat details
      * @param contactUser contactUser parameter
      */
-    public void showChatDetails(User contactUser) {
+    private void showChatDetails(User contactUser) {
         if (contactUser != null) {
-            inputMessageTextField.setVisible(true);
-            chatTextArea.setVisible(true);
-            sendMessageButton.setVisible(true);
+            makeChatElementsVisible(true);
             contactNameLabel.setText(contactUser.getLogin());
             messageProcessor(contactUser);
+            if (!clientApp.getUsers().contains(contactUser)) {
+                makeChatElementsVisible(false);
+                contactNameLabel.setText(contactUser + " is currently offline");
+            }
         } else {
             contactNameLabel.setText("");
             chatTextArea.setText("");
-            inputMessageTextField.setVisible(false);
-            chatTextArea.setVisible(false);
-            sendMessageButton.setVisible(false);
+            makeChatElementsVisible(false);
         }
+    }
+
+    /**
+     * Makes Input Message TextField, Chat TextArea,
+     * Send message button visible or hidden
+     * @param visible can be true or false
+     */
+    private void makeChatElementsVisible(boolean visible) {
+        inputMessageTextField.setVisible(visible);
+        chatTextArea.setVisible(visible);
+        sendMessageButton.setVisible(visible);
     }
 
     /**
@@ -109,7 +121,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
 
     /**
      * Send button click event.
-     * @param ae
+     * @param ae parameter
      */
     @FXML
     private void sendMessageHandler(ActionEvent ae) {
@@ -138,21 +150,39 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     }
 
     /**
-     * Add new user to a collection when online
-     * @param user
+     * Adds new user to a collection when online
+     * @param user User that goes online
      */
     @Override
     public void online(User user) {
         clientApp.getUsers().add(user);
+        if (myContactsList.getItems().contains(user)) {
+            selectUser();
+        }
     }
 
     /**
      * Removes a user from a collection when offline
-     * @param user
+     * @param user User that goes online
      */
     @Override
     public void offline(User user) {
         clientApp.getUsers().remove(user);
+        if (myContactsList.getItems().contains(user)) {
+            selectUser();
+        }
+    }
+
+    /**
+     * Clears list selection and choose previously selected user
+     */
+    private void selectUser() {
+        int index = myContactsList.getSelectionModel().getSelectedIndex();
+        Platform.runLater(() -> {
+                myContactsList.getSelectionModel().clearSelection();
+                myContactsList.getSelectionModel().select(index);
+            }
+        );
     }
 
     /**
