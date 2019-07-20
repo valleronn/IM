@@ -43,7 +43,7 @@ public class AddContactsDialog {
      * Add button click event
      */
     @FXML
-    private void AddContact() {
+    private void addContact() {
             okClicked = true;
             ObservableList<User> selectedContacts =  contactsList.getSelectionModel().getSelectedItems();
             for (User contact: selectedContacts) {

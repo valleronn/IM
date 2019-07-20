@@ -8,7 +8,7 @@
       <ListView fx:id="contactsList" prefHeight="400.0" prefWidth="400.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
       <HBox spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="5.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#AddContact" text="Add" />
+            <Button mnemonicParsing="false" onAction="#addContact" text="Add" />
             <Button mnemonicParsing="false" onAction="#cancel" text="Cancel" />
          </children>
       </HBox>

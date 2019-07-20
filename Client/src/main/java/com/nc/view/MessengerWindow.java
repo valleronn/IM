@@ -4,6 +4,7 @@ import com.nc.ClientApp;
 import com.nc.controller.ClientController;
 import com.nc.controller.MessageListener;
 import com.nc.controller.UserStatusListener;
+import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -75,7 +76,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             makeChatElementsVisible(true);
             contactNameLabel.setText(contactUser.getLogin());
             messageProcessor(contactUser);
-            if (!clientApp.getUsers().contains(contactUser)) {
+            if (!clientApp.getUsers().contains(contactUser) && !(contactUser instanceof ChatRoom)) {
                 makeChatElementsVisible(false);
                 contactNameLabel.setText(contactUser + " is currently offline");
             }
@@ -147,6 +148,14 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private void addContactsHandler() {
         clientApp.addContactsDialog();
+    }
+
+    /**
+     * Add contacts to chat button click event
+     */
+    @FXML
+    private void createNewChatHandler() {
+        clientApp.createNewChatDialog();
     }
 
     /**

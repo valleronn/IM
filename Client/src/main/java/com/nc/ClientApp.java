@@ -3,10 +3,7 @@ package com.nc;
 import com.nc.controller.ClientController;
 import com.nc.model.users.Admin;
 import com.nc.model.users.User;
-import com.nc.view.AddContactsDialog;
-import com.nc.view.LoginDialog;
-import com.nc.view.MessengerWindow;
-import com.nc.view.RegisterDialog;
+import com.nc.view.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -156,8 +153,36 @@ public class ClientApp extends Application {
         }
     }
 
+    /**
+     * Shows a dialog to create new group chat.
+     */
+    public boolean createNewChatDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(ClientApp.class.getResource("view/CreateNewChatDialog.fxml"));
+            AnchorPane addContactsDialog = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Create a new chat");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+
+            Scene scene = new Scene(addContactsDialog);
+            dialogStage.setScene(scene);
+
+            CreateNewChatDialog controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setClientApp(this);
+            dialogStage.showAndWait();
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println("Hello from client!");
+        System.out.println("Hello from messenger!");
         launch(args);
     }
 }
