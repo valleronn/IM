@@ -2,6 +2,7 @@ package com.nc.model;
 
 import com.nc.controller.ClientListener;
 import com.nc.model.users.Admin;
+import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ public class Server extends Thread {
     private User user;
     private List<ClientListener> listenerList = new ArrayList<>();
     private Set<User> users = new HashSet<>();
+    private Set<ChatRoom> chatRooms = new HashSet<>();
 
     public Server(int port) {
         this.port = port;
@@ -52,5 +54,9 @@ public class Server extends Thread {
 
     public User getUser() {
         return user;
+    }
+
+    public Set<ChatRoom> getChatRooms() {
+        return chatRooms;
     }
 }

@@ -127,6 +127,9 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private void sendMessageHandler(ActionEvent ae) {
         User selectedContact = myContactsList.getSelectionModel().getSelectedItem();
+        if (selectedContact == null) {
+            selectedContact = myChatList.getSelectionModel().getSelectedItem();
+        }
         selectedContact.getMessageList().add(inputMessageTextField.getText());
         messageProcessor(selectedContact);
         try {
@@ -203,6 +206,9 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @Override
     public void onMessage(String from, String body) {
         User selectedContact = myContactsList.getSelectionModel().getSelectedItem();
+        if (selectedContact == null) {
+            selectedContact = myChatList.getSelectionModel().getSelectedItem();
+        }
         if (selectedContact != null) {
             selectedContact.getMessageList().add(from + ": " + body);
             messageProcessor(selectedContact);

@@ -3,6 +3,7 @@ package com.nc.controller;
 import com.nc.model.Server;
 import com.nc.model.message.Message;
 import com.nc.model.message.MessageType;
+import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 
 import java.io.*;
@@ -52,10 +53,10 @@ public class ClientListener extends Thread {
                     break;
                 } else if ("msg".equalsIgnoreCase(cmd)) {
                     handleMessage(message);
-                /*} else if ("join".equalsIgnoreCase(cmd)) {
-                    handleJoin(msgType);
-                } else if ("leave".equalsIgnoreCase(cmd)) {
-                    handleLeave(msgType);*/
+                } else if ("joingroupchat".equalsIgnoreCase(cmd)) {
+                    handleJoinGroupChat(message);
+                } else if ("leavegroupchat".equalsIgnoreCase(cmd)) {
+                    handleLeaveGroupChat(message);
                 } else if ("register".equalsIgnoreCase(cmd)) {
                     handleRegister(outputStream, message);
                 } else if ("login".equalsIgnoreCase(cmd)) {
@@ -70,12 +71,52 @@ public class ClientListener extends Thread {
         clientSocket.close();
     }
 
+    private void handleLeaveGroupChat(Message message) {
+        for(ChatRoom chatRoom: server.getChatRooms()) {
+            if (chatRoom.getChatName().equals(message.getBody())) {
+                server.getChatRooms().remove(chatRoom);
+            }
+        }
+    }
+
+    private void handleJoinGroupChat(Message message) {
+        boolean chatExists = false;
+        for(ChatRoom chatRoom: server.getChatRooms()) {
+            if (chatRoom.getChatName().equals(message.getBody())) {
+                chatExists = true;
+            }
+        }
+        if (!chatExists) {
+            ChatRoom chatRoom = new ChatRoom();
+            chatRoom.setChatName(message.getBody());
+            server.getChatRooms().add(chatRoom);
+        }
+    }
+
+    public boolean isMemberOfChat(String chatName) {
+        boolean result = false;
+        for(ChatRoom chatRoom: server.getChatRooms()) {
+            if (chatRoom.getChatName().equals(chatName)) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
     private void handleMessage(Message message) throws IOException {
         String sendTo = message.getTo();
+        boolean isGroupMessage = sendTo.startsWith("#");
         List<ClientListener> listenerList = server.getListenerList();
         for(ClientListener listener: listenerList) {
-            if (sendTo.equals(listener.getUser().getLogin())) {
-                listener.send(message);
+            if (isGroupMessage) {
+                if (listener.isMemberOfChat(sendTo)
+                        && !getUser().equals(listener.getUser())) {
+                    listener.send(message);
+                }
+            } else {
+                if (sendTo.equals(listener.getUser().getLogin())) {
+                    listener.send(message);
+                }
             }
         }
 

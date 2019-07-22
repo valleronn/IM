@@ -4,5 +4,7 @@ public enum MessageType {
     LOGIN,
     LOGOFF,
     REGISTER,
-    MSG
+    MSG,
+    JOINGROUPCHAT,
+    LEAVEGROUPCHAT
 }

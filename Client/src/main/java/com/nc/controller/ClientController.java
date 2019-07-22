@@ -125,6 +125,18 @@ public class ClientController {
     }
 
     /**
+     * Sends JOINGROUPCHAT message
+     * @throws IOException
+     */
+    public void joinGroupChat(String chatName) throws IOException {
+        Message joinGroupChatMessage = new Message();
+        joinGroupChatMessage.setType(MessageType.JOINGROUPCHAT);
+        joinGroupChatMessage.setBody(chatName);
+        String cmd = messageController.createMessage(joinGroupChatMessage);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
      * Launches a new thread to read messages from server.
      */
     public void messageReader() {

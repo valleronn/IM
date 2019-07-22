@@ -173,6 +173,7 @@ public class ClientApp extends Application {
             CreateNewChatDialog controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setClientApp(this);
+            controller.setClientController(client);
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {
