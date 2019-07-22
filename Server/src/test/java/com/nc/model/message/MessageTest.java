@@ -10,11 +10,11 @@ import java.io.StringReader;
 
 public class MessageTest {
     private static String TEST_XML="<?xml version = \"1.0\" ?>" +
-            "<message xmlns=\"http://foobar.com\">" +
+            "<message xmlns=\"http://im.nc.com\">" +
             "<messageID>123456789</messageID>" +
-            "<status>101</status>" +
-            "<from>147</from>" +
-            "<to>258</to>" +
+            "<status>test</status>" +
+            "<from>test</from>" +
+            "<to>test</to>" +
 //            "<code1>XXX</code1>" + // uncommit for check exception
             "<body>abc</body>" +
             "</message>";
@@ -35,9 +35,9 @@ public class MessageTest {
                 unmarshaller.unmarshal(new StringReader(TEST_XML));
 
         Assert.assertEquals(123456789, message.getMessageID());
-        Assert.assertEquals(101, message.getStatus());
-        Assert.assertEquals(147, message.getFrom());
-        Assert.assertEquals(258, message.getTo());
+        Assert.assertEquals("test", message.getStatus());
+        Assert.assertEquals("test", message.getFrom());
+        Assert.assertEquals("test", message.getTo());
         Assert.assertEquals("abc", message.getBody());
 
     }
