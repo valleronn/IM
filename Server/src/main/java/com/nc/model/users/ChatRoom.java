@@ -40,6 +40,10 @@ public class ChatRoom extends User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(chatName);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((chatName == null) ? 0 : chatName.hashCode());
+        result = prime * result + ((users == null) ? 0 : users.hashCode());
+        return result;
     }
 }

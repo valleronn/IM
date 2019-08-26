@@ -86,6 +86,13 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(login);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((login == null) ? 0 : login.hashCode());
+        result = prime * result + ((fullName == null) ? 0 : fullName.hashCode());
+        result = prime * result + ((password == null) ? 0 : password.hashCode());
+        result = prime * result + ((regDate == null) ? 0 : regDate.hashCode());
+        return result;
     }
+
 }
