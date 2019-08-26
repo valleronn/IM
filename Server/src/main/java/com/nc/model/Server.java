@@ -9,8 +9,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
+import org.apache.log4j.Logger;
 
 public class Server extends Thread {
+
+    private final static Logger LOGGER = Logger.getLogger(Server.class);
+
     private int port;
     private User user;
     private List<ClientListener> listenerList = new ArrayList<>();
@@ -36,7 +40,7 @@ public class Server extends Thread {
                 clientListener.start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Server start error: ", e);
         }
     }
 

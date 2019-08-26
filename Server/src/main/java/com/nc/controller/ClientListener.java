@@ -10,8 +10,12 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Date;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 public class ClientListener extends Thread {
+
+    private final static Logger LOGGER = Logger.getLogger(ClientListener.class);
+
     private final Socket clientSocket;
     private final Server server;
     private User user;
@@ -34,7 +38,7 @@ public class ClientListener extends Thread {
         try {
             handleClientConnection();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("handleClientConnection error: ", e);
         }
     }
 

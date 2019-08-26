@@ -11,12 +11,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import java.io.IOException;
+import org.apache.log4j.Logger;
 
 
 /**
  * Represents MessengerWindow class
  */
 public class MessengerWindow implements UserStatusListener, MessageListener {
+
+    private final static Logger LOGGER = Logger.getLogger(MessengerWindow.class);
+
     @FXML
     private Label fullName;
     @FXML
@@ -137,7 +141,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
                 client.sendChatMessage(selectedContact.getLogin(), user.getLogin(), inputMessageTextField.getText());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Client.sendChatMessage error: ", e);
         }
         if (!clientApp.getMyChatContacts().contains(selectedContact)) {
             addAUserToMyChatList(selectedContact);

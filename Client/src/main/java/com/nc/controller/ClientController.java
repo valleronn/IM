@@ -9,11 +9,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * Represents ClientController
  */
 public class ClientController {
+
+    private final static Logger LOGGER = Logger.getLogger(MessageController.class);
+
     private Socket socket;
     private String serverName;
     private InputStream inputStream;
@@ -44,7 +48,7 @@ public class ClientController {
             this.bufferedIn = new BufferedReader(new InputStreamReader(inputStream));
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Connection to server error: ", e);
         }
         return false;
     }
@@ -171,11 +175,11 @@ public class ClientController {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("ReadMessage exception: ", ex);
             try {
                 socket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("ReadMessage (I/O): ", e);
             }
         }
     }

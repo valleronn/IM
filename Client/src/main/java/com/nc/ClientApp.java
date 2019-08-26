@@ -14,11 +14,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Date;
+import org.apache.log4j.Logger;
 
 /**
  * Client main class of Messenger application.
  */
 public class ClientApp extends Application {
+
+    private final static Logger LOGGER = Logger.getLogger(ClientApp.class);
+
     private Stage primaryStage;
     private User admin;
     private ObservableList<User> users = FXCollections.observableArrayList();
@@ -59,7 +63,7 @@ public class ClientApp extends Application {
             try {
                 client.logoff();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("Client start error: ", e);
             } finally {
                 System.exit(0);
             }
@@ -81,7 +85,7 @@ public class ClientApp extends Application {
             controller.setClientApp(this);
             controller.setClientController(client);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Show login dialog error: ", e);
         }
     }
 
@@ -100,7 +104,7 @@ public class ClientApp extends Application {
             controller.setClientApp(this);
             controller.setClientController(client);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Show register dialog error: ", e);
         }
     }
 
@@ -120,7 +124,7 @@ public class ClientApp extends Application {
             controller.setClientController(client);
             primaryStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Show messenger window error: ", e);
         }
 
     }
@@ -148,7 +152,7 @@ public class ClientApp extends Application {
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Show adding contacts dialog error: ", e);
             return false;
         }
     }
@@ -177,7 +181,7 @@ public class ClientApp extends Application {
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Show New Chat dialog error: ", e);
             return false;
         }
     }
