@@ -1,6 +1,5 @@
-package com.nc.model;
+package com.nc.controller;
 
-import com.nc.controller.ClientListener;
 import com.nc.model.users.Admin;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;

@@ -1,6 +1,5 @@
 package com.nc.controller;
 
-import com.nc.model.Server;
 import com.nc.model.message.Message;
 import com.nc.model.message.MessageType;
 import com.nc.model.users.ChatRoom;

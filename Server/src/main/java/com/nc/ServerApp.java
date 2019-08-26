@@ -1,6 +1,6 @@
 package com.nc;
 
-import com.nc.model.Server;
+import com.nc.controller.Server;
 
 /**
  * Server main class on Messenger application.
