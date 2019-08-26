@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ConnectConfig>
+    <serverIP>localhost</serverIP>
+    <serverPort>4444</serverPort>
+</ConnectConfig>

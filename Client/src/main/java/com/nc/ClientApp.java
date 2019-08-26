@@ -1,6 +1,7 @@
 package com.nc;
 
 import com.nc.controller.ClientController;
+import com.nc.controller.ConfigReader;
 import com.nc.model.users.Admin;
 import com.nc.model.users.User;
 import com.nc.view.*;
@@ -29,11 +30,14 @@ public class ClientApp extends Application {
     private ObservableList<User> myContacts = FXCollections.observableArrayList();
     private ObservableList<User> myChatContacts = FXCollections.observableArrayList();
 
-    private String serverName = "localhost";
-    private int port = 4444;
+    private String serverName;
+    private int port;
     private ClientController client;
 
     public ClientApp() {
+        ConfigReader configReader = new ConfigReader();
+        this.serverName = configReader.getIp();
+        this.port = configReader.getPort();
         admin = new Admin("admin", "admin", new Date());
         client = new ClientController(serverName, port);
     }
