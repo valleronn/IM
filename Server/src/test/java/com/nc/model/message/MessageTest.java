@@ -10,7 +10,7 @@ import java.io.StringReader;
 
 public class MessageTest {
     private static String TEST_XML="<?xml version = \"1.0\" ?>" +
-            "<message xmlns=\"http://im.nc.com\">" +
+            "<message>" +
             "<messageID>123456789</messageID>" +
             "<status>test</status>" +
             "<from>test</from>" +
@@ -20,7 +20,7 @@ public class MessageTest {
             "</message>";
     @Test
     public void test() throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance("com.nc.model.message");
+        JAXBContext jc = JAXBContext.newInstance(Message.class);
         Unmarshaller unmarshaller = jc.createUnmarshaller();
 
         unmarshaller.setEventHandler(new ValidationEventHandler() {
