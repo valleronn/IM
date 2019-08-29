@@ -2,7 +2,6 @@ package com.nc;
 
 import com.nc.controller.ClientController;
 import com.nc.controller.ConfigReader;
-import com.nc.model.users.Admin;
 import com.nc.model.users.User;
 import com.nc.view.*;
 import javafx.application.Application;
@@ -14,7 +13,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.util.Date;
 import org.apache.log4j.Logger;
 
 /**
@@ -25,7 +23,6 @@ public class ClientApp extends Application {
     private final static Logger LOGGER = Logger.getLogger(ClientApp.class);
 
     private Stage primaryStage;
-    private User admin;
     private ObservableList<User> users = FXCollections.observableArrayList();
     private ObservableList<User> myContacts = FXCollections.observableArrayList();
     private ObservableList<User> myChatContacts = FXCollections.observableArrayList();
@@ -38,12 +35,7 @@ public class ClientApp extends Application {
         ConfigReader configReader = new ConfigReader();
         this.serverName = configReader.getIp();
         this.port = configReader.getPort();
-        admin = new Admin("admin", "admin", new Date());
         client = new ClientController(serverName, port);
-    }
-
-    public User getAdmin() {
-        return admin;
     }
 
     public ObservableList<User> getUsers() {
