@@ -20,7 +20,12 @@ import org.apache.log4j.Logger;
  */
 public class ClientApp extends Application {
 
-    private final static Logger LOGGER = Logger.getLogger(ClientApp.class);
+    private static final Logger LOGGER = Logger.getLogger(ClientApp.class);
+    private static final String LOGIN_DIALOG = "view/LoginDialog.fxml";
+    private static final String REGISTER_DIALOG = "view/RegisterDialog.fxml";
+    private static final String MESSENGER_WINDOW = "view/MessengerWindow.fxml";
+    private static final String ADD_CONTACTS_DIALOG = "view/AddContactsDialog.fxml";
+    private static final String CREATE_NEW_CHAT_DIALOG = "view/CreateNewChatDialog.fxml";
 
     private Stage primaryStage;
     private ObservableList<User> users = FXCollections.observableArrayList();
@@ -71,7 +76,7 @@ public class ClientApp extends Application {
      */
     private void showLoginDialog() {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(ClientApp.class.getResource("view/LoginDialog.fxml"));
+        loader.setLocation(ClientApp.class.getResource(LOGIN_DIALOG));
         try {
             AnchorPane loginDialog = loader.load();
             Scene scene = new Scene(loginDialog);
@@ -90,7 +95,7 @@ public class ClientApp extends Application {
      */
     public void showRegisterDialog() {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(ClientApp.class.getResource("view/RegisterDialog.fxml"));
+        loader.setLocation(ClientApp.class.getResource(REGISTER_DIALOG));
         try {
             AnchorPane registerDialog = loader.load();
             Scene scene = new Scene(registerDialog);
@@ -110,7 +115,7 @@ public class ClientApp extends Application {
     public void showMessengerWindow(User user) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(ClientApp.class.getResource("view/MessengerWindow.fxml"));
+            loader.setLocation(ClientApp.class.getResource(MESSENGER_WINDOW));
             AnchorPane messengerWindow = loader.load();
             Scene scene = new Scene(messengerWindow);
             primaryStage.setScene(scene);
@@ -131,7 +136,7 @@ public class ClientApp extends Application {
     public boolean addContactsDialog() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(ClientApp.class.getResource("view/AddContactsDialog.fxml"));
+            loader.setLocation(ClientApp.class.getResource(ADD_CONTACTS_DIALOG));
             AnchorPane addContactsDialog = loader.load();
 
             Stage dialogStage = new Stage();
@@ -159,7 +164,7 @@ public class ClientApp extends Application {
     public boolean createNewChatDialog() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(ClientApp.class.getResource("view/CreateNewChatDialog.fxml"));
+            loader.setLocation(ClientApp.class.getResource(CREATE_NEW_CHAT_DIALOG));
             AnchorPane addContactsDialog = loader.load();
 
             Stage dialogStage = new Stage();
