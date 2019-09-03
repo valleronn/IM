@@ -141,6 +141,18 @@ public class ClientController {
     }
 
     /**
+     * Sends LEAVEGROUPCHAT message
+     * @throws IOException
+     */
+    public synchronized void leaveGroupChat(String chatName) throws IOException {
+        Message leaveGroupChatMessage = new Message();
+        leaveGroupChatMessage.setType(MessageType.LEAVEGROUPCHAT);
+        leaveGroupChatMessage.setBody(chatName);
+        String cmd = messageController.createMessage(leaveGroupChatMessage);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
      * Launches a new thread to read messages from server.
      */
     public synchronized void messageReader() {
