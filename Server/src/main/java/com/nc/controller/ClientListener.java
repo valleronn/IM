@@ -46,27 +46,32 @@ public class ClientListener extends Thread {
         this.outputStream = clientSocket.getOutputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
-        while ((line = reader.readLine()) != null) {
+        logoffhappened: while ((line = reader.readLine()) != null) {
             String msgType = messageController.extractMessage(line).getType().toString();
             Message message = messageController.extractMessage(line);
             if (msgType != null) {
-                    String cmd = msgType;
-                if ("logoff".equalsIgnoreCase(cmd)) {
-                    handleLogOff();
-                    break;
-                } else if ("msg".equalsIgnoreCase(cmd)) {
-                    handleMessage(message);
-                } else if ("joingroupchat".equalsIgnoreCase(cmd)) {
-                    handleJoinGroupChat(message);
-                } else if ("leavegroupchat".equalsIgnoreCase(cmd)) {
-                    handleLeaveGroupChat(message);
-                } else if ("register".equalsIgnoreCase(cmd)) {
-                    handleRegister(outputStream, message);
-                } else if ("login".equalsIgnoreCase(cmd)) {
-                    handleLogin(outputStream, message);
-                } else  {
-                    String msg = "Unknown " + cmd + "\n";
-                    outputStream.write(msg.getBytes());
+                switch (msgType) {
+                    case "LOGOFF":
+                        handleLogOff();
+                        break logoffhappened;
+                    case "MSG":
+                        handleMessage(message);
+                        break;
+                    case "JOINGROUPCHAT":
+                        handleJoinGroupChat(message);
+                        break;
+                    case "LEAVEGROUPCHAT":
+                        handleLeaveGroupChat(message);
+                        break;
+                    case "REGISTER":
+                        handleRegister(outputStream, message);
+                        break;
+                    case "LOGIN":
+                        handleLogin(outputStream, message);
+                        break;
+                    default:
+                        String msg = "Unknown " + msgType + "\n";
+                        outputStream.write(msg.getBytes());
                 }
             }
 
@@ -96,7 +101,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    public boolean isMemberOfChat(String chatName) {
+    private boolean isMemberOfChat(String chatName) {
         boolean result = false;
         for(ChatRoom chatRoom: server.getChatRooms()) {
             if (chatRoom.getChatName().equals(chatName)) {
