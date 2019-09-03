@@ -39,7 +39,7 @@ public class ClientController {
      * Connects to a server
      * @return returns true or false
      */
-    public boolean connect() {
+    public synchronized boolean connect() {
         try {
             this.socket = new Socket(serverName, serverPort);
             System.out.println("Client port is " + socket.getLocalPort());
@@ -60,7 +60,7 @@ public class ClientController {
      * @param msgBody message body
      * @throws IOException
      */
-    public void sendChatMessage(String sendTo, String sentFrom, String msgBody) throws IOException {
+    public synchronized void sendChatMessage(String sendTo, String sentFrom, String msgBody) throws IOException {
         Message chatMessage = new Message();
         chatMessage.setType(MessageType.MSG);
         chatMessage.setTo(sendTo);
@@ -76,7 +76,7 @@ public class ClientController {
      * @return true or false
      * @throws IOException
      */
-    public boolean register(String login, String password) throws IOException {
+    public synchronized boolean register(String login, String password) throws IOException {
         boolean result = false;
         Message registerMessage = new Message();
         registerMessage.setType(MessageType.REGISTER);
@@ -100,7 +100,7 @@ public class ClientController {
      * @return returns true or false
      * @throws IOException
      */
-    public boolean login(String login, String password) throws IOException {
+    public synchronized boolean login(String login, String password) throws IOException {
         boolean result = false;
         Message loginMessage = new Message();
         loginMessage.setType(MessageType.LOGIN);
@@ -121,7 +121,7 @@ public class ClientController {
      * Sends logoff message
      * @throws IOException
      */
-    public void logoff() throws IOException {
+    public synchronized void logoff() throws IOException {
         Message logoffMessage = new Message();
         logoffMessage.setType(MessageType.LOGOFF);
         String cmd = messageController.createMessage(logoffMessage);
@@ -132,7 +132,7 @@ public class ClientController {
      * Sends JOINGROUPCHAT message
      * @throws IOException
      */
-    public void joinGroupChat(String chatName) throws IOException {
+    public synchronized void joinGroupChat(String chatName) throws IOException {
         Message joinGroupChatMessage = new Message();
         joinGroupChatMessage.setType(MessageType.JOINGROUPCHAT);
         joinGroupChatMessage.setBody(chatName);
@@ -143,7 +143,7 @@ public class ClientController {
     /**
      * Launches a new thread to read messages from server.
      */
-    public void messageReader() {
+    public synchronized void messageReader() {
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -206,19 +206,19 @@ public class ClientController {
         }
     }
 
-    public void addUserStatusListener(UserStatusListener listener) {
+    public synchronized void addUserStatusListener(UserStatusListener listener) {
         userStatusListeners.add(listener);
     }
 
-    public void removeUserStatusListener(UserStatusListener listener) {
+    public synchronized void removeUserStatusListener(UserStatusListener listener) {
         userStatusListeners.remove(listener);
     }
 
-    public void addMessageListener(MessageListener listener) {
+    public synchronized void addMessageListener(MessageListener listener) {
         messageListeners.add(listener);
     }
 
-    public void removeMessageListener(MessageListener listener) {
+    public synchronized void removeMessageListener(MessageListener listener) {
         messageListeners.remove(listener);
     }
 }
