@@ -9,6 +9,7 @@ import com.nc.model.users.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
 import javafx.scene.control.*;
 import java.io.IOException;
 import org.apache.log4j.Logger;
@@ -35,6 +36,10 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     private ListView<User> myContactsList;
     @FXML
     private ListView<User> myChatList;
+    @FXML
+    private Button chatDetailsButton;
+    @FXML
+    private ContextMenu leaveChatContextMenu;
     private User user;
     private ClientApp clientApp;
     private ClientController client;
@@ -100,6 +105,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         inputMessageTextField.setVisible(visible);
         chatTextArea.setVisible(visible);
         sendMessageButton.setVisible(visible);
+        chatDetailsButton.setVisible(visible);
     }
 
     /**
@@ -163,6 +169,34 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private void createNewChatHandler() {
         clientApp.createNewChatDialog();
+    }
+
+    /**
+     * Open context menu button click event
+     */
+    @FXML
+    private void openContextMenuHandler() {
+        leaveChatContextMenu.show(chatDetailsButton, Side.BOTTOM, 0, 0);
+    }
+
+    /**
+     * Leave chat click event
+     */
+    @FXML
+    private void leaveChatHandler() {
+        ChatRoom selectedChat = (ChatRoom) myContactsList.getSelectionModel().getSelectedItem();
+        if (selectedChat == null) {
+            selectedChat = (ChatRoom) myChatList.getSelectionModel().getSelectedItem();
+        }
+        if (selectedChat != null) {
+            try {
+                client.leaveGroupChat(selectedChat.getChatName());
+                clientApp.getMyChatContacts().remove(selectedChat);
+                clientApp.getMyContacts().remove(selectedChat);
+            } catch (IOException e) {
+                LOGGER.error("Fails to leave " + selectedChat.getChatName() + " group chat", e);
+            }
+        }
     }
 
     /**
