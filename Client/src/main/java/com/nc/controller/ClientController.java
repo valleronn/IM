@@ -2,12 +2,10 @@ package com.nc.controller;
 
 import com.nc.model.message.Message;
 import com.nc.model.message.MessageType;
-import com.nc.model.users.User;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -199,14 +197,14 @@ public class ClientController {
     private void handleOnline(Message message) {
         String login = message.getFrom();
         for(UserStatusListener listener: userStatusListeners) {
-            listener.online(new User(login, null, new Date()));
+            listener.online(login);
         }
     }
 
     private void handleOffline(Message message) {
         String login = message.getFrom();
         for(UserStatusListener listener: userStatusListeners) {
-            listener.offline(new User(login, null, new Date()));
+            listener.offline(login);
         }
     }
 

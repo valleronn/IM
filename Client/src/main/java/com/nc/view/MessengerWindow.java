@@ -204,8 +204,10 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * @param user User that goes online
      */
     @Override
-    public void online(User user) {
-        clientApp.getUsers().add(user);
+    public void online(String user) {
+        User newUser = new User();
+        newUser.setLogin(user);
+        clientApp.getUsers().add(newUser);
         if (myContactsList.getItems().contains(user)) {
             selectUser();
         }
@@ -216,10 +218,14 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * @param user User that goes online
      */
     @Override
-    public void offline(User user) {
-        clientApp.getUsers().remove(user);
-        if (myContactsList.getItems().contains(user)) {
-            selectUser();
+    public void offline(String user) {
+        for (User u: clientApp.getUsers()) {
+            if (u.getLogin().equals(user)) {
+                clientApp.getUsers().remove(u);
+                if (myContactsList.getItems().contains(u)) {
+                    selectUser();
+                }
+            }
         }
     }
 
