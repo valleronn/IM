@@ -184,11 +184,12 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      */
     @FXML
     private void leaveChatHandler() {
-        ChatRoom selectedChat = (ChatRoom) myContactsList.getSelectionModel().getSelectedItem();
-        if (selectedChat == null) {
-            selectedChat = (ChatRoom) myChatList.getSelectionModel().getSelectedItem();
-        }
-        if (selectedChat != null) {
+        User myContact = myContactsList.getSelectionModel().getSelectedItem();
+        if (myContact.getLogin().startsWith("#")) {
+            ChatRoom selectedChat = (ChatRoom) myContactsList.getSelectionModel().getSelectedItem();
+            if (selectedChat == null) {
+                selectedChat = (ChatRoom) myChatList.getSelectionModel().getSelectedItem();
+            }
             try {
                 client.leaveGroupChat(selectedChat.getChatName());
                 clientApp.getMyChatContacts().remove(selectedChat);
@@ -196,6 +197,13 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             } catch (IOException e) {
                 LOGGER.error("Fails to leave " + selectedChat.getChatName() + " group chat", e);
             }
+        } else {
+            User selectedUser = myContactsList.getSelectionModel().getSelectedItem();
+            if (selectedUser == null) {
+                selectedUser = myChatList.getSelectionModel().getSelectedItem();
+            }
+            clientApp.getMyChatContacts().remove(selectedUser);
+            clientApp.getMyContacts().remove(selectedUser);
         }
     }
 
