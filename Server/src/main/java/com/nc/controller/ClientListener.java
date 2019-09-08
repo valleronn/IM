@@ -1,5 +1,6 @@
 package com.nc.controller;
 
+import com.nc.model.IOworker;
 import com.nc.model.message.Message;
 import com.nc.model.message.MessageType;
 import com.nc.model.users.ChatRoom;
@@ -14,6 +15,7 @@ import org.apache.log4j.Logger;
 public class ClientListener extends Thread {
 
     private final static Logger LOGGER = Logger.getLogger(ClientListener.class);
+    private static final File USERS_DATA = new File("users.bin");
 
     private final Socket clientSocket;
     private final Server server;
@@ -163,6 +165,13 @@ public class ClientListener extends Thread {
         }
         user = new User(login, password, new Date());
         server.getUsers().add(user);
+
+        try {
+            IOworker.writeBinary(server.getUsers(), USERS_DATA);
+        } catch (IOException e) {
+            LOGGER.error("Error reading file with users: ", e);
+        }
+
         Message msg = new Message();
         msg.setStatus("Registration successful");
         outputStream.write(messageController.createMessage(msg).getBytes());

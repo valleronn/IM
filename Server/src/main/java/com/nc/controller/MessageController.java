@@ -1,6 +1,5 @@
 package com.nc.controller;
 
-import com.nc.ServerApp;
 import com.nc.model.message.Message;
 import org.apache.log4j.Logger;
 

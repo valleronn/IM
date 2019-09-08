@@ -39,6 +39,37 @@ public class User {
         return messageList;
     }
 
+    public String getFullName() {
+        return login;
+    }
+
+    public Date getRegDate() {
+        return regDate;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRegDate(Date regDate) {
+        this.regDate = regDate;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setMessageList(List<String> messageList) {
+        this.messageList = messageList;
+    }
 
     @Override
     public String toString() {

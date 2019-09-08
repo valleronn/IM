@@ -1,9 +1,11 @@
 package com.nc.controller;
 
+import com.nc.model.IOworker;
 import com.nc.model.users.Admin;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,6 +15,7 @@ import org.apache.log4j.Logger;
 public class Server extends Thread {
 
     private final static Logger LOGGER = Logger.getLogger(Server.class);
+    private static final File USERS_DATA = new File("users.bin");
 
     private int port;
     private User user;
@@ -22,8 +25,13 @@ public class Server extends Thread {
 
     public Server(int port) {
         this.port = port;
-        user = new Admin("admin", "admin", new Date());
-        users.add(user);
+        try {
+            IOworker.readBinary(users, USERS_DATA);
+        } catch (IOException e) {
+            LOGGER.error("Error reading file with users: ", e);
+        }
+/*        user = new Admin("admin", "admin", new Date());
+        users.add(user);*/
     }
 
     @Override
