@@ -31,45 +31,14 @@ public class User {
         this.login = login;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Date getRegDate() {
-        return regDate;
-    }
-
-    public void setRegDate(Date regDate) {
-        this.regDate = regDate;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public List<String> getMessageList() {
         return messageList;
     }
 
-    public void setMessageList(List<String> messageList) {
-        this.messageList = messageList;
-    }
 
     @Override
     public String toString() {
