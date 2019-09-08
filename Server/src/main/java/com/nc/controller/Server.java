@@ -2,6 +2,7 @@ package com.nc.controller;
 
 import com.nc.model.IOworker;
 import com.nc.model.users.Admin;
+import com.nc.model.users.BanList;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 
@@ -22,6 +23,7 @@ public class Server extends Thread {
     private List<ClientListener> listenerList = new ArrayList<>();
     private Set<User> users = new HashSet<>();
     private Set<ChatRoom> chatRooms = new HashSet<>();
+    private BanList banList = new BanList();
 
     public Server(int port) {
         this.port = port;
@@ -30,8 +32,8 @@ public class Server extends Thread {
         } catch (IOException e) {
             LOGGER.error("Error reading file with users: ", e);
         }
-/*        user = new Admin("admin", "admin", new Date());
-        users.add(user);*/
+        user = new Admin("admin", "admin", new Date(), this, banList);
+        users.add(user);
     }
 
     @Override
@@ -67,7 +69,22 @@ public class Server extends Thread {
         return user;
     }
 
+    public  User getUser(String login) {
+        User currentUser = null;
+        for (User u : users) {
+            if (u.getLogin().equals(login)) {
+                currentUser = u;
+                return currentUser;
+            }
+        }
+        return currentUser;
+    }
+
     public Set<ChatRoom> getChatRooms() {
         return chatRooms;
+    }
+
+    public BanList getBanList() {
+        return banList;
     }
 }
