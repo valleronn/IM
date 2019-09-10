@@ -37,6 +37,10 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private ListView<User> myChatList;
     @FXML
+    private Button editProfileButton;
+    @FXML
+    private ContextMenu editProfileContextMenu;
+    @FXML
     private Button chatDetailsButton;
     @FXML
     private ContextMenu leaveChatContextMenu;
@@ -175,8 +179,25 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * Open context menu button click event
      */
     @FXML
+    private void showEditProfileContextMenuHandler() {
+        editProfileContextMenu.show(editProfileButton, Side.BOTTOM, 0, 0);
+    }
+
+    /**
+     * Open chat details context menu button click event
+     */
+    @FXML
     private void openContextMenuHandler() {
         leaveChatContextMenu.show(chatDetailsButton, Side.BOTTOM, 0, 0);
+    }
+
+
+    /**
+     * Open Edit Profile click event
+     */
+    @FXML
+    private void editProfileHandler() {
+        clientApp.showEditProfileDialog(user);
     }
 
     /**

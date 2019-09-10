@@ -71,6 +71,9 @@ public class ClientListener extends Thread {
                     case "LOGIN":
                         handleLogin(outputStream, message);
                         break;
+                    case "UPDATEPROFILE":
+                        handleUpdateProfile(outputStream, message);
+                        break;
                     default:
                         String msg = "Unknown " + msgType + "\n";
                         outputStream.write(msg.getBytes());
@@ -209,6 +212,17 @@ public class ClientListener extends Thread {
             outputStream.write(messageController.createMessage(msg).getBytes());
             System.err.println("Login failed for " + login);
         }
+    }
+
+    private void handleUpdateProfile(OutputStream outputStream, Message message) throws IOException {
+        String newLogin = message.getTo();
+        String password = message.getBody();
+        user.setLogin(newLogin);
+        user.setPassword(password);
+        Message msg = new Message();
+        msg.setStatus("Profile updated");
+        outputStream.write(messageController.createMessage(msg).getBytes());
+        System.out.println("User updated profile successfully: " + newLogin);
     }
 
     private void sendCurrUserAllOtherLogins(String login, List<ClientListener> listenerList) throws IOException {

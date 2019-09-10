@@ -37,7 +37,7 @@ public class ClientController {
      * Connects to a server
      * @return returns true or false
      */
-    public synchronized boolean connect() {
+    public boolean connect() {
         try {
             this.socket = new Socket(serverName, serverPort);
             System.out.println("Client port is " + socket.getLocalPort());
@@ -58,7 +58,7 @@ public class ClientController {
      * @param msgBody message body
      * @throws IOException
      */
-    public synchronized void sendChatMessage(String sendTo, String sentFrom, String msgBody) throws IOException {
+    public void sendChatMessage(String sendTo, String sentFrom, String msgBody) throws IOException {
         Message chatMessage = new Message();
         chatMessage.setType(MessageType.MSG);
         chatMessage.setTo(sendTo);
@@ -74,7 +74,7 @@ public class ClientController {
      * @return true or false
      * @throws IOException
      */
-    public synchronized boolean register(String login, String password) throws IOException {
+    public boolean register(String login, String password) throws IOException {
         boolean result = false;
         Message registerMessage = new Message();
         registerMessage.setType(MessageType.REGISTER);
@@ -98,7 +98,7 @@ public class ClientController {
      * @return returns true or false
      * @throws IOException
      */
-    public synchronized boolean login(String login, String password) throws IOException {
+    public boolean login(String login, String password) throws IOException {
         boolean result = false;
         Message loginMessage = new Message();
         loginMessage.setType(MessageType.LOGIN);
@@ -115,11 +115,29 @@ public class ClientController {
         return result;
     }
 
+    public boolean updateProfile(String login, String newLogin, String password) throws IOException {
+        boolean result = false;
+        Message updateProfileMessage = new Message();
+        updateProfileMessage.setType(MessageType.UPDATEPROFILE);
+        updateProfileMessage.setFrom(login);
+        updateProfileMessage.setTo(newLogin);
+        updateProfileMessage.setBody(password);
+        String cmd = messageController.createMessage(updateProfileMessage);
+        outputStream.write(cmd.getBytes());
+
+        String response = messageController.extractMessage(bufferedIn.readLine()).getStatus();
+        System.out.println("Response line: " + response);
+        if ("Profile updated".equalsIgnoreCase(response)) {
+            result = true;
+        }
+        return result;
+    }
+
     /**
      * Sends logoff message
      * @throws IOException
      */
-    public synchronized void logoff() throws IOException {
+    public void logoff() throws IOException {
         Message logoffMessage = new Message();
         logoffMessage.setType(MessageType.LOGOFF);
         String cmd = messageController.createMessage(logoffMessage);
@@ -130,7 +148,7 @@ public class ClientController {
      * Sends JOINGROUPCHAT message
      * @throws IOException
      */
-    public synchronized void joinGroupChat(String chatName) throws IOException {
+    public void joinGroupChat(String chatName) throws IOException {
         Message joinGroupChatMessage = new Message();
         joinGroupChatMessage.setType(MessageType.JOINGROUPCHAT);
         joinGroupChatMessage.setBody(chatName);
@@ -142,7 +160,7 @@ public class ClientController {
      * Sends LEAVEGROUPCHAT message
      * @throws IOException
      */
-    public synchronized void leaveGroupChat(String chatName) throws IOException {
+    public void leaveGroupChat(String chatName) throws IOException {
         Message leaveGroupChatMessage = new Message();
         leaveGroupChatMessage.setType(MessageType.LEAVEGROUPCHAT);
         leaveGroupChatMessage.setBody(chatName);
@@ -153,7 +171,7 @@ public class ClientController {
     /**
      * Launches a new thread to read messages from server.
      */
-    public synchronized void messageReader() {
+    public void messageReader() {
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -194,21 +212,21 @@ public class ClientController {
         }
     }
 
-    private void handleOnline(Message message) {
+    private synchronized void handleOnline(Message message) {
         String login = message.getFrom();
         for(UserStatusListener listener: userStatusListeners) {
             listener.online(login);
         }
     }
 
-    private void handleOffline(Message message) {
+    private synchronized void handleOffline(Message message) {
         String login = message.getFrom();
         for(UserStatusListener listener: userStatusListeners) {
             listener.offline(login);
         }
     }
 
-    private void handleMessage(Message message) {
+    private synchronized void handleMessage(Message message) {
         String from = message.getFrom();
         String body = message.getBody();
         for (MessageListener listener: messageListeners) {

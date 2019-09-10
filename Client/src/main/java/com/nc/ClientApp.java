@@ -26,6 +26,7 @@ public class ClientApp extends Application {
     private static final String MESSENGER_WINDOW = "view/MessengerWindow.fxml";
     private static final String ADD_CONTACTS_DIALOG = "view/AddContactsDialog.fxml";
     private static final String CREATE_NEW_CHAT_DIALOG = "view/CreateNewChatDialog.fxml";
+    private static final String EDIT_PROFILE_DIALOG = "view/EditProfileDialog.fxml";
 
     private Stage primaryStage;
     private ObservableList<User> users = FXCollections.observableArrayList();
@@ -183,6 +184,35 @@ public class ClientApp extends Application {
             return controller.isOkClicked();
         } catch (IOException e) {
             LOGGER.error("Show New Chat dialog error: ", e);
+            return false;
+        }
+    }
+
+    /**
+     * Initializes Add/Edit window.
+     */
+    public boolean showEditProfileDialog(User user) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(ClientApp.class.getResource(EDIT_PROFILE_DIALOG));
+            AnchorPane page = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit profile");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            EditProfileDialog controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setUser(user);
+            controller.setClientController(client);
+            dialogStage.showAndWait();
+            return controller.isSaveClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error("Failed to initialize Edit Profile dialog", e);
             return false;
         }
     }
