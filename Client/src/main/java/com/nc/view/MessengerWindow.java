@@ -66,6 +66,10 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         client.messageReader();
     }
 
+    public void setFullName(String login) {
+        this.fullName.setText(login);
+    }
+
     /**
      * Specifies chat details during initialization
      */
@@ -197,7 +201,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      */
     @FXML
     private void editProfileHandler() {
-        clientApp.showEditProfileDialog(user);
+        clientApp.showEditProfileDialog(user, this);
     }
 
     /**

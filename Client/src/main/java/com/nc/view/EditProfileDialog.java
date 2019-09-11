@@ -19,10 +19,15 @@ public class EditProfileDialog {
     private ClientController client;
     private User user;
     private Stage dialogStage;
+    private MessengerWindow parentWindow;
     private boolean saveClicked = false;
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
+    }
+
+    public void setParentWindow(MessengerWindow parentWindow) {
+        this.parentWindow = parentWindow;
     }
 
     public void setClientController(ClientController client) {
@@ -47,16 +52,19 @@ public class EditProfileDialog {
      * Save profile click event
      */
     @FXML
-    public void saveProfile() throws IOException {
+    public void saveProfile() throws IOException, InterruptedException {
         if (isInputValid()) {
-            boolean isProfileUpdated = client.updateProfile(user.getLogin(), loginField.getText(), passwordField.getText());
-            if (isProfileUpdated) {
+            client.setProfileUpdated(false);
+            client.updateProfile(user.getLogin(), loginField.getText(), passwordField.getText());
+            Thread.sleep(200);
+            if (client.isProfileUpdated()) {
                 user.setLogin(loginField.getText());
                 user.setPassword(passwordField.getText());
                 saveClicked = true;
                 dialogStage.close();
+                parentWindow.setFullName(user.getLogin());
             } else {
-                warningLabel.setText("Login or password is incorrect");
+                warningLabel.setText("Login or password appear to be in use");
                 warningLabel.setVisible(true);
             }
         } else {

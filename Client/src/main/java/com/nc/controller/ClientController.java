@@ -25,7 +25,15 @@ public class ClientController {
     private MessageController messageController;
     private List<MessageListener> messageListeners = new ArrayList<>();
     private List<UserStatusListener> userStatusListeners = new ArrayList<>();
+    private boolean profileUpdated;
 
+    public boolean isProfileUpdated() {
+        return profileUpdated;
+    }
+
+    public void setProfileUpdated(boolean profileUpdated) {
+        this.profileUpdated = profileUpdated;
+    }
 
     public ClientController(String serverName, int serverPort) {
         this.serverName = serverName;
@@ -115,8 +123,14 @@ public class ClientController {
         return result;
     }
 
-    public boolean updateProfile(String login, String newLogin, String password) throws IOException {
-        boolean result = false;
+    /**
+     * Sends update profile message
+     * @param login initial login
+     * @param newLogin new login
+     * @param password new password
+     * @throws IOException
+     */
+    public void updateProfile(String login, String newLogin, String password) throws IOException {
         Message updateProfileMessage = new Message();
         updateProfileMessage.setType(MessageType.UPDATEPROFILE);
         updateProfileMessage.setFrom(login);
@@ -124,13 +138,6 @@ public class ClientController {
         updateProfileMessage.setBody(password);
         String cmd = messageController.createMessage(updateProfileMessage);
         outputStream.write(cmd.getBytes());
-
-        String response = messageController.extractMessage(bufferedIn.readLine()).getStatus();
-        System.out.println("Response line: " + response);
-        if ("Profile updated".equalsIgnoreCase(response)) {
-            result = true;
-        }
-        return result;
     }
 
     /**
@@ -188,17 +195,19 @@ public class ClientController {
         try {
             String line;
             while ((line = bufferedIn.readLine()) != null) {
-                String msgType = messageController.extractMessage(line).getType().toString();
-                String msgStatus = messageController.extractMessage(line).getStatus();
                 Message message = messageController.extractMessage(line);
+                String msgType = message.getType().toString();
+                String msgStatus = message.getStatus();
                 if (message != null) {
-                    String cmd = msgType;
                     if ("online".equalsIgnoreCase(msgStatus)) {
                         handleOnline(message);
                     } else if ("offline".equalsIgnoreCase(msgStatus)) {
                         handleOffline(message);
-                    } else if ("msg".equalsIgnoreCase(cmd)) {
+                    } else if ("msg".equalsIgnoreCase(msgType)) {
                         handleMessage(message);
+                    } else if ("Profile updated".equalsIgnoreCase(msgStatus)) {
+                        System.out.println("Profile has been updated");
+                        setProfileUpdated(true);
                     }
                 }
             }

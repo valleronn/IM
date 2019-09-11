@@ -217,12 +217,30 @@ public class ClientListener extends Thread {
     private void handleUpdateProfile(OutputStream outputStream, Message message) throws IOException {
         String newLogin = message.getTo();
         String password = message.getBody();
-        user.setLogin(newLogin);
-        user.setPassword(password);
-        Message msg = new Message();
-        msg.setStatus("Profile updated");
-        outputStream.write(messageController.createMessage(msg).getBytes());
-        System.out.println("User updated profile successfully: " + newLogin);
+        boolean credentialsExist = false;
+        for (User user: server.getUsers()) {
+            if ((!user.equals(this.user) && newLogin.equalsIgnoreCase(user.getLogin()))
+                    || (!user.equals(this.user) && password.equals(user.getPassword()))) {
+                credentialsExist = true;
+                break;
+            }
+        }
+
+        if (credentialsExist) {
+            Message msg = new Message();
+            msg.setStatus("Profile update failed");
+            msg.setType(MessageType.UPDATEPROFILE);
+            outputStream.write(messageController.createMessage(msg).getBytes());
+            System.err.println("Profile update failed for: " + user.getLogin());
+        } else {
+            this.user.setLogin(newLogin);
+            this.user.setPassword(password);
+            Message msg = new Message();
+            msg.setStatus("Profile updated");
+            msg.setType(MessageType.UPDATEPROFILE);
+            outputStream.write(messageController.createMessage(msg).getBytes());
+            System.out.println("User updated profile successfully: " + newLogin);
+        }
     }
 
     private void sendCurrUserAllOtherLogins(String login, List<ClientListener> listenerList) throws IOException {

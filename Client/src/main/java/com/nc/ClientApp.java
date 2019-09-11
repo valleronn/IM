@@ -191,7 +191,7 @@ public class ClientApp extends Application {
     /**
      * Initializes Add/Edit window.
      */
-    public boolean showEditProfileDialog(User user) {
+    public boolean showEditProfileDialog(User user, MessengerWindow parentWindow) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(ClientApp.class.getResource(EDIT_PROFILE_DIALOG));
@@ -208,6 +208,7 @@ public class ClientApp extends Application {
             controller.setDialogStage(dialogStage);
             controller.setUser(user);
             controller.setClientController(client);
+            controller.setParentWindow(parentWindow);
             dialogStage.showAndWait();
             return controller.isSaveClicked();
         } catch (IOException e) {
