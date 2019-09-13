@@ -44,7 +44,11 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     private Button chatDetailsButton;
     @FXML
     private ContextMenu leaveChatContextMenu;
+    @FXML
+    private Tab chatsTab;
     private User user;
+    private User selectedContact;
+    private ChatRoom selectedChat;
     private ClientApp clientApp;
     private ClientController client;
 
@@ -176,7 +180,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      */
     @FXML
     private void createNewChatHandler() {
-        clientApp.createNewChatDialog();
+        clientApp.createNewChatDialog(null);
     }
 
     /**
@@ -209,26 +213,57 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      */
     @FXML
     private void leaveChatHandler() {
-        User myContact = myContactsList.getSelectionModel().getSelectedItem();
-        if (myContact.getLogin().startsWith("#")) {
-            ChatRoom selectedChat = (ChatRoom) myContactsList.getSelectionModel().getSelectedItem();
-            if (selectedChat == null) {
+        if (chatsTab.isSelected()) {
+            selectedContact = myChatList.getSelectionModel().getSelectedItem();
+            if (isChatRoom()) {
                 selectedChat = (ChatRoom) myChatList.getSelectionModel().getSelectedItem();
-            }
-            try {
-                client.leaveGroupChat(selectedChat.getChatName());
-                clientApp.getMyChatContacts().remove(selectedChat);
-                clientApp.getMyContacts().remove(selectedChat);
-            } catch (IOException e) {
-                LOGGER.error("Fails to leave " + selectedChat.getChatName() + " group chat", e);
+                try {
+                    client.leaveGroupChat(selectedChat.getChatName());
+                    clientApp.getMyChatContacts().remove(selectedChat);
+                    clientApp.getMyContacts().remove(selectedChat);
+                } catch (IOException e) {
+                    LOGGER.error("Fails to leave " + selectedChat.getChatName() + " group chat", e);
+                }
+            } else {
+                clientApp.getMyChatContacts().remove(selectedContact);
+                clientApp.getMyContacts().remove(selectedContact);
             }
         } else {
-            User selectedUser = myContactsList.getSelectionModel().getSelectedItem();
-            if (selectedUser == null) {
-                selectedUser = myChatList.getSelectionModel().getSelectedItem();
+            selectedContact = myContactsList.getSelectionModel().getSelectedItem();
+            clientApp.getMyChatContacts().remove(selectedContact);
+            clientApp.getMyContacts().remove(selectedContact);
+        }
+    }
+
+    private boolean isChatRoom() {
+        if (selectedContact.getLogin().startsWith("#")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Open Chat Details dialog click event
+     */
+    @FXML
+    public void showChatDetailsHandler() {
+        if (chatsTab.isSelected()) {
+            selectedContact = myChatList.getSelectionModel().getSelectedItem();
+            if (isChatRoom()) {
+                selectedChat = (ChatRoom) myChatList.getSelectionModel().getSelectedItem();
+                clientApp.showChatDetailsDialog(null, selectedChat);
+            } else {
+                clientApp.showChatDetailsDialog(selectedContact, null);
             }
-            clientApp.getMyChatContacts().remove(selectedUser);
-            clientApp.getMyContacts().remove(selectedUser);
+        } else {
+            selectedContact = myContactsList.getSelectionModel().getSelectedItem();
+            if (isChatRoom()) {
+                selectedChat = (ChatRoom) myContactsList.getSelectionModel().getSelectedItem();
+                clientApp.showChatDetailsDialog(null, selectedChat);
+            } else {
+                clientApp.showChatDetailsDialog(selectedContact, null);
+            }
         }
     }
 

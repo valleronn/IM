@@ -2,6 +2,7 @@ package com.nc;
 
 import com.nc.controller.ClientController;
 import com.nc.controller.ConfigReader;
+import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import com.nc.view.*;
 import javafx.application.Application;
@@ -27,6 +28,7 @@ public class ClientApp extends Application {
     private static final String ADD_CONTACTS_DIALOG = "view/AddContactsDialog.fxml";
     private static final String CREATE_NEW_CHAT_DIALOG = "view/CreateNewChatDialog.fxml";
     private static final String EDIT_PROFILE_DIALOG = "view/EditProfileDialog.fxml";
+    private static final String CHAT_DETAILS_DIALOG = "view/ChatDetailsDialog.fxml";
 
     private Stage primaryStage;
     private ObservableList<User> users = FXCollections.observableArrayList();
@@ -162,14 +164,14 @@ public class ClientApp extends Application {
     /**
      * Shows a dialog to create new group chat.
      */
-    public boolean createNewChatDialog() {
+    public boolean createNewChatDialog(ChatRoom chatRoom) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(ClientApp.class.getResource(CREATE_NEW_CHAT_DIALOG));
             AnchorPane addContactsDialog = loader.load();
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Create a new chat");
+            dialogStage.setTitle("Add users to chat");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
 
@@ -178,6 +180,7 @@ public class ClientApp extends Application {
 
             CreateNewChatDialog controller = loader.getController();
             controller.setDialogStage(dialogStage);
+            controller.setChatRoom(chatRoom);
             controller.setClientApp(this);
             controller.setClientController(client);
             dialogStage.showAndWait();
@@ -189,7 +192,7 @@ public class ClientApp extends Application {
     }
 
     /**
-     * Initializes Add/Edit window.
+     * Initializes Edit Profile dialog.
      */
     public boolean showEditProfileDialog(User user, MessengerWindow parentWindow) {
         try {
@@ -217,6 +220,36 @@ public class ClientApp extends Application {
             return false;
         }
     }
+
+    /**
+     * Initializes Chat Details dialog.
+     */
+    public void showChatDetailsDialog(User user, ChatRoom chatRoom) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(ClientApp.class.getResource(CHAT_DETAILS_DIALOG));
+            AnchorPane page = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Chat " + chatRoom + " details");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            ChatDetailsDialog controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setChatContact(user);
+            controller.setChatRoom(chatRoom);
+            controller.setClientApp(this);
+            controller.setClientController(client);
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error("Failed to initialize Chat Details dialog", e);
+        }
+    }
+
 
     public static void main(String[] args) {
         System.out.println("Hello from messenger!");

@@ -22,7 +22,7 @@
                   </Button>
                   <TabPane prefHeight="798.0" prefWidth="395.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0">
                     <tabs>
-                      <Tab text="Chats">
+                      <Tab fx:id="chatsTab" text="Chats">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -85,6 +85,7 @@
                      <contextMenu>
                         <ContextMenu fx:id="leaveChatContextMenu">
                           <items>
+                            <MenuItem mnemonicParsing="false" onAction="#showChatDetailsHandler" text="Chat Details" />
                             <MenuItem mnemonicParsing="false" onAction="#leaveChatHandler" text="Leave Chat" />
                           </items>
                         </ContextMenu>

@@ -36,10 +36,17 @@ public class CreateNewChatDialog {
     public void setClientApp(ClientApp clientApp) {
         this.clientApp = clientApp;
         contactsList.setItems(clientApp.getMyContacts());
+        if (chatRoom != null) {
+            chatNameTextField.setText(chatRoom.getChatName());
+        }
     }
 
     public void setClientController(ClientController client) {
         this.client = client;
+    }
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
     }
 
     @FXML
@@ -63,13 +70,14 @@ public class CreateNewChatDialog {
         if (isInputValid()) {
             okClicked = true;
             ObservableList<User> selectedContacts =  contactsList.getCheckModel().getCheckedItems();
-            chatRoom = new ChatRoom();
-            chatRoom.setChatName("#" + chatNameTextField.getText());
+            if (chatRoom == null) {
+                chatRoom = new ChatRoom();
+                chatRoom.setChatName("#" + chatNameTextField.getText());
+            }
 
             for (User contact: selectedContacts) {
                 chatRoom.getUsers().add(contact);
             }
-            clientApp.getMyContacts().add(chatRoom);
             clientApp.getMyChatContacts().add(chatRoom);
             client.joinGroupChat(chatRoom.getChatName());
             dialogStage.close();

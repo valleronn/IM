@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nc.view.ChatDetailsDialog">
+   <children>
+      <Label text="Users in chat:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+      <ListView fx:id="chatList" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="40.0" />
+      <VBox spacing="10.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <Label text="Status:" />
+            <Label fx:id="statusLabel" text="Label" />
+            <Label fx:id="banLabel" text="Banned"/>
+         </children>
+      </VBox>
+      <Label fx:id="warningLabel" text="Label" textFill="#e40a0a" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="10.0" />
+      <HBox spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#addUserToGroupChatHandler" text="Add" />
+            <Button fx:id="removeButton" mnemonicParsing="false" onAction="#removeUserFromGroupChatHandler" text="Remove" />
+            <Button fx:id="banButton" mnemonicParsing="false" onAction="#banUserHandler" text="Ban" />
+            <Button fx:id="unBanButton" mnemonicParsing="false" onAction="#unBanUserHandler" text="UnBan" />
+            <Button mnemonicParsing="false" onAction="#closeDialogHandler" text="Close" />
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
