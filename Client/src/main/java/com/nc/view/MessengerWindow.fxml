@@ -85,7 +85,7 @@
                      <contextMenu>
                         <ContextMenu fx:id="leaveChatContextMenu">
                           <items>
-                            <MenuItem mnemonicParsing="false" onAction="#showChatDetailsHandler" text="Chat Details" />
+                            <MenuItem fx:id="showChatDetailsMenuItem" mnemonicParsing="false" onAction="#showChatDetailsHandler" text="Chat Details" />
                             <MenuItem mnemonicParsing="false" onAction="#leaveChatHandler" text="Leave Chat" />
                           </items>
                         </ContextMenu>

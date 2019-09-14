@@ -1,16 +1,16 @@
 package com.nc.model.users;
 
-import java.util.HashSet;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.Objects;
-import java.util.Set;
 
 public class ChatRoom extends User {
     private String chatName;
-    private Set<User> users;
+    private ObservableList<User> users = FXCollections.observableArrayList();
 
     public ChatRoom() {
         super();
-        users = new HashSet<>();
     }
 
     public String getChatName() {
@@ -22,11 +22,11 @@ public class ChatRoom extends User {
         super.setLogin(chatName);
     }
 
-    public Set<User> getUsers() {
+    public ObservableList<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(ObservableList<User> users) {
         this.users = users;
     }
 

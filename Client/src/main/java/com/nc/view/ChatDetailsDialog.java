@@ -4,8 +4,6 @@ import com.nc.ClientApp;
 import com.nc.controller.ClientController;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -18,7 +16,11 @@ public class ChatDetailsDialog {
     @FXML
     private Label statusLabel;
     @FXML
+    private Label onlineLabel;
+    @FXML
     private Label banLabel;
+    @FXML
+    private Label warningLabel;
     private Stage dialogStage;
     private ClientApp clientApp;
     private User chatContact;
@@ -31,6 +33,8 @@ public class ChatDetailsDialog {
 
     public void setChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;
+        chatList.setItems(chatRoom.getUsers());
+
     }
 
     public void setDialogStage(Stage dialogStage) {
@@ -39,11 +43,6 @@ public class ChatDetailsDialog {
 
     public void setClientApp(ClientApp clientApp) {
         this.clientApp = clientApp;
-        ObservableList<User> chatUsers = FXCollections.observableArrayList();
-        for (User user: chatRoom.getUsers()) {
-            chatUsers.add(user);
-        }
-        chatList.setItems(chatUsers);
     }
 
     public void setClientController(ClientController client) {
@@ -64,9 +63,11 @@ public class ChatDetailsDialog {
      */
     private void showUserDetails(User contactUser) {
         if (contactUser != null) {
-            statusLabel.setText("Online");
+            statusLabel.setVisible(true);
+            onlineLabel.setText("Online");
         } else {
             statusLabel.setText("");
+            onlineLabel.setText("");
             banLabel.setText("");
         }
     }
@@ -86,7 +87,13 @@ public class ChatDetailsDialog {
      */
     @FXML
     public void removeUserFromGroupChatHandler() {
-
+        User user = chatList.getSelectionModel().getSelectedItem();
+        if (user != null) {
+            chatList.getItems().remove(user);
+        } else {
+            warningLabel.setVisible(true);
+            warningLabel.setText("Please select a user to remove");
+        }
     }
 
     @FXML

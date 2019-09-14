@@ -184,7 +184,7 @@ public class ClientApp extends Application {
             controller.setClientApp(this);
             controller.setClientController(client);
             dialogStage.showAndWait();
-            return controller.isOkClicked();
+            return controller.isAddClicked();
         } catch (IOException e) {
             LOGGER.error("Show New Chat dialog error: ", e);
             return false;
@@ -231,7 +231,7 @@ public class ClientApp extends Application {
             AnchorPane page = loader.load();
 
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Chat " + chatRoom + " details");
+            dialogStage.setTitle(chatRoom + " group chat details");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
             Scene scene = new Scene(page);

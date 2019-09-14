@@ -45,6 +45,8 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private ContextMenu leaveChatContextMenu;
     @FXML
+    private MenuItem showChatDetailsMenuItem;
+    @FXML
     private Tab chatsTab;
     private User user;
     private User selectedContact;
@@ -100,6 +102,12 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             if (!clientApp.getUsers().contains(contactUser) && !(contactUser instanceof ChatRoom)) {
                 makeChatElementsVisible(false);
                 contactNameLabel.setText(contactUser + " is currently offline");
+            }
+            selectedContact = contactUser;
+            if (!isChatRoom()) {
+                showChatDetailsMenuItem.setVisible(false);
+            } else {
+                showChatDetailsMenuItem.setVisible(true);
             }
         } else {
             contactNameLabel.setText("");
@@ -179,8 +187,13 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * Add contacts to chat button click event
      */
     @FXML
-    private void createNewChatHandler() {
-        clientApp.createNewChatDialog(null);
+    private void createNewChatHandler() throws IOException {
+        ChatRoom chatRoom = new ChatRoom();
+        boolean addClicked = clientApp.createNewChatDialog(chatRoom);
+        if (addClicked) {
+            clientApp.getMyChatContacts().add(chatRoom);
+            client.joinGroupChat(chatRoom.getChatName());
+        }
     }
 
     /**
@@ -276,7 +289,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         User newUser = new User();
         newUser.setLogin(user);
         clientApp.getUsers().add(newUser);
-        if (myContactsList.getItems().contains(user)) {
+        if (myContactsList.getItems().contains(newUser)) {
             selectUser();
         }
     }

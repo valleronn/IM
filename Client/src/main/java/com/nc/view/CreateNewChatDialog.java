@@ -11,8 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.controlsfx.control.CheckListView;
 
-import java.io.IOException;
-
 /**
  * Represents CreateNewChatDialog class
  */
@@ -27,7 +25,7 @@ public class CreateNewChatDialog {
     private ClientApp clientApp;
     private ClientController client;
     private ChatRoom chatRoom;
-    private boolean okClicked = false;
+    private boolean addClicked = false;
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
@@ -58,28 +56,24 @@ public class CreateNewChatDialog {
      * Returns true if Add clicked, otherwise false
      * @return
      */
-    public boolean isOkClicked() {
-        return okClicked;
+    public boolean isAddClicked() {
+        return addClicked;
     }
 
     /**
      * Add button click event
      */
     @FXML
-    private void addContactsToChat() throws IOException {
+    private void addContactsToChat() {
         if (isInputValid()) {
-            okClicked = true;
+            addClicked = true;
             ObservableList<User> selectedContacts =  contactsList.getCheckModel().getCheckedItems();
-            if (chatRoom == null) {
-                chatRoom = new ChatRoom();
+            if (chatRoom.getChatName() == null) {
                 chatRoom.setChatName("#" + chatNameTextField.getText());
             }
-
             for (User contact: selectedContacts) {
                 chatRoom.getUsers().add(contact);
             }
-            clientApp.getMyChatContacts().add(chatRoom);
-            client.joinGroupChat(chatRoom.getChatName());
             dialogStage.close();
         } else {
             warningLabel.setVisible(true);
