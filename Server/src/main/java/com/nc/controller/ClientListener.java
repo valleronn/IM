@@ -74,6 +74,9 @@ public class ClientListener extends Thread {
                     case "UPDATEPROFILE":
                         handleUpdateProfile(outputStream, message);
                         break;
+                    case "INVITEUSERTOCHAT":
+                        handleInviteUserToChat(message);
+                        break;
                     default:
                         String msg = "Unknown " + msgType + "\n";
                         outputStream.write(msg.getBytes());
@@ -104,6 +107,22 @@ public class ClientListener extends Thread {
             chatRoom.setChatName(message.getBody());
             server.getChatRooms().add(chatRoom);
         }
+    }
+
+    private void handleInviteUserToChat(Message message) throws IOException {
+        String sender = message.getFrom();
+        String recipient = message.getTo();
+        Message inviteMessage = new Message();
+        inviteMessage.setType(MessageType.INVITEUSERTOCHAT);
+        inviteMessage.setStatus("invitation");
+        inviteMessage.setFrom(sender);
+        inviteMessage.setTo(recipient);
+        for(ClientListener listener: server.getListenerList()) {
+            if (listener.getUser().getLogin().equals(recipient)) {
+                listener.send(inviteMessage);
+            }
+        }
+
     }
 
     private boolean isMemberOfChat(String chatName) {

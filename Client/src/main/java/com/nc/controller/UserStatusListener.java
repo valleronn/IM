@@ -6,4 +6,5 @@ package com.nc.controller;
 public interface UserStatusListener {
     void online(String user);
     void offline(String user);
+    void invite(String fromUser);
 }

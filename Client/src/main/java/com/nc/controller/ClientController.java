@@ -152,6 +152,21 @@ public class ClientController {
     }
 
     /**
+     * Invites user to chat
+     * @param to recipient
+     * @param from sender
+     * @throws IOException
+     */
+    public void inviteUserToChat(String to, String from) throws IOException {
+        Message inviteMessage = new Message();
+        inviteMessage.setType(MessageType.INVITEUSERTOCHAT);
+        inviteMessage.setTo(to);
+        inviteMessage.setFrom(from);
+        String cmd = messageController.createMessage(inviteMessage);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
      * Sends JOINGROUPCHAT message
      * @throws IOException
      */
@@ -208,6 +223,8 @@ public class ClientController {
                     } else if ("Profile updated".equalsIgnoreCase(msgStatus)) {
                         System.out.println("Profile has been updated");
                         setProfileUpdated(true);
+                    } else if ("invitation".equalsIgnoreCase(msgStatus)) {
+                        handleInvitation(message);
                     }
                 }
             }
@@ -240,6 +257,13 @@ public class ClientController {
         String body = message.getBody();
         for (MessageListener listener: messageListeners) {
             listener.onMessage(from, body);
+        }
+    }
+
+    private synchronized void handleInvitation(Message message) {
+        String from = message.getFrom();
+        for(UserStatusListener listener: userStatusListeners) {
+            listener.invite(from);
         }
     }
 

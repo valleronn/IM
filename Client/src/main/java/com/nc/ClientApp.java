@@ -58,6 +58,10 @@ public class ClientApp extends Application {
         return myChatContacts;
     }
 
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -136,7 +140,7 @@ public class ClientApp extends Application {
     /**
      * Shows a dialog to add new contacts.
      */
-    public boolean addContactsDialog() {
+    public boolean addContactsDialog(User user) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(ClientApp.class.getResource(ADD_CONTACTS_DIALOG));
@@ -152,7 +156,9 @@ public class ClientApp extends Application {
 
             AddContactsDialog controller = loader.getController();
             controller.setDialogStage(dialogStage);
+            controller.setUser(user);
             controller.setClientApp(this);
+            controller.setClientController(client);
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {

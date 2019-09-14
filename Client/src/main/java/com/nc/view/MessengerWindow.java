@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import java.io.IOException;
+import java.util.Optional;
+
 import org.apache.log4j.Logger;
 
 
@@ -47,7 +49,11 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private MenuItem showChatDetailsMenuItem;
     @FXML
+    private TabPane tabs;
+    @FXML
     private Tab chatsTab;
+    @FXML
+    private Tab contactsTab;
     private User user;
     private User selectedContact;
     private ChatRoom selectedChat;
@@ -180,7 +186,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      */
     @FXML
     private void addContactsHandler() {
-        clientApp.addContactsDialog();
+        clientApp.addContactsDialog(user);
     }
 
     /**
@@ -338,5 +344,27 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             selectedContact.getMessageList().add(from + ": " + body);
             messageProcessor(selectedContact);
         }
+    }
+
+    /**
+     * Invites user to start a new chat
+     * @param fromUser sender user
+     */
+    public void invite(String fromUser) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.initOwner(clientApp.getPrimaryStage());
+            alert.setTitle("Start a new chat with " + fromUser + "?");
+            alert.setHeaderText(null);
+            alert.setContentText("Would you like to start a new chat with  "
+                    + fromUser + "?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                User contactUser = new User();
+                contactUser.setLogin(fromUser);
+                clientApp.getMyContacts().add(contactUser);
+                tabs.getSelectionModel().select(contactsTab);
+            }
+        });
     }
 }

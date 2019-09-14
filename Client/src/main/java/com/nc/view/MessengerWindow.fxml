@@ -20,7 +20,7 @@
                         </ContextMenu>
                      </contextMenu>
                   </Button>
-                  <TabPane prefHeight="798.0" prefWidth="395.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0">
+                  <TabPane fx:id="tabs" prefHeight="798.0" prefWidth="395.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0">
                     <tabs>
                       <Tab fx:id="chatsTab" text="Chats">
                         <content>

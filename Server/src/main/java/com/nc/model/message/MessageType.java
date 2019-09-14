@@ -7,5 +7,6 @@ public enum MessageType {
     MSG,
     JOINGROUPCHAT,
     LEAVEGROUPCHAT,
-    UPDATEPROFILE
+    UPDATEPROFILE,
+    INVITEUSERTOCHAT
 }
