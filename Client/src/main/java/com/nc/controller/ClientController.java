@@ -7,6 +7,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import com.nc.model.users.User;
+import javafx.collections.ObservableList;
 import org.apache.log4j.Logger;
 
 /**
@@ -167,6 +169,22 @@ public class ClientController {
     }
 
     /**
+     * Invites users to Group Chat
+     * @param groupChatContacts list of group chat contacts
+     * @param from sender
+     * @throws IOException
+     */
+    public void inviteUsersToGroupChat(ObservableList<User> groupChatContacts, String from) throws IOException {
+        String usersToString = messageController.convertContactsToString(groupChatContacts).toString();
+        Message inviteMessage = new Message();
+        inviteMessage.setType(MessageType.INVITEUSERTOCHAT);
+        inviteMessage.setTo(usersToString);
+        inviteMessage.setFrom(from);
+        String cmd = messageController.createMessage(inviteMessage);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
      * Sends JOINGROUPCHAT message
      * @throws IOException
      */
@@ -262,8 +280,10 @@ public class ClientController {
 
     private synchronized void handleInvitation(Message message) {
         String from = message.getFrom();
+        String listOfGroupChatUsers = message.getTo();
+        ObservableList<User> groupChatContacts = messageController.extractContactsFromString(listOfGroupChatUsers);
         for(UserStatusListener listener: userStatusListeners) {
-            listener.invite(from);
+            listener.invite(from, groupChatContacts);
         }
     }
 

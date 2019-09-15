@@ -77,6 +77,9 @@ public class ClientListener extends Thread {
                     case "INVITEUSERTOCHAT":
                         handleInviteUserToChat(message);
                         break;
+                    case "INVITEUSERSTOGROUPCHAT":
+                        handleInviteUserToGroupChat(message);
+                        break;
                     default:
                         String msg = "Unknown " + msgType + "\n";
                         outputStream.write(msg.getBytes());
@@ -122,7 +125,25 @@ public class ClientListener extends Thread {
                 listener.send(inviteMessage);
             }
         }
+    }
 
+    private void handleInviteUserToGroupChat(Message message) throws IOException {
+        String sender = message.getFrom();
+        String recipients = message.getTo();
+        Message inviteMessage = new Message();
+        inviteMessage.setType(MessageType.INVITEUSERSTOGROUPCHAT);
+        inviteMessage.setStatus("invitation");
+        inviteMessage.setFrom(sender);
+        inviteMessage.setTo(recipients);
+
+        String[] recipientsArr = recipients.split("\\;");
+        for(String login: recipientsArr) {
+            for(ClientListener listener: server.getListenerList()) {
+                if (listener.getUser().getLogin().equals(login)) {
+                    listener.send(inviteMessage);
+                }
+            }
+        }
     }
 
     private boolean isMemberOfChat(String chatName) {

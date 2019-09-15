@@ -7,6 +7,7 @@ import com.nc.controller.UserStatusListener;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
@@ -199,6 +200,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         if (addClicked) {
             clientApp.getMyChatContacts().add(chatRoom);
             client.joinGroupChat(chatRoom.getChatName());
+            client.inviteUsersToGroupChat(chatRoom.getUsers(), chatRoom.getChatName());
         }
     }
 
@@ -350,21 +352,55 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * Invites user to start a new chat
      * @param fromUser sender user
      */
-    public void invite(String fromUser) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.initOwner(clientApp.getPrimaryStage());
-            alert.setTitle("Start a new chat with " + fromUser + "?");
-            alert.setHeaderText(null);
-            alert.setContentText("Would you like to start a new chat with  "
-                    + fromUser + "?");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                User contactUser = new User();
-                contactUser.setLogin(fromUser);
-                clientApp.getMyContacts().add(contactUser);
-                tabs.getSelectionModel().select(contactsTab);
-            }
-        });
+    public void invite(String fromUser, ObservableList<User> groupChatContacts) {
+        if (fromUser.startsWith("#")) {
+            Platform.runLater(() -> {
+                String alertTitle = "Start " + fromUser + " group chat?";
+                String alertContentText = "Would you like to join " + fromUser + " group chat?";
+                if (showInvitationAlert(alertTitle, alertContentText)){
+                    ChatRoom chatRoom = new ChatRoom();
+                    chatRoom.setChatName(fromUser);
+                    chatRoom.setUsers(groupChatContacts);
+                    clientApp.getMyChatContacts().add(chatRoom);
+                    try {
+                        client.joinGroupChat(chatRoom.getChatName());
+                    } catch (IOException e) {
+                        LOGGER.error("Fails to join " + chatRoom.getChatName() + " group chat", e);
+                    }
+                }
+            });
+        } else {
+            Platform.runLater(() -> {
+                String alertTitle = "Start a new chat with " + fromUser + "?";
+                String alertContentText = "Would you like to start a new chat with  "
+                        + fromUser + "?";
+                if (showInvitationAlert(alertTitle, alertContentText)){
+                    User contactUser = new User();
+                    contactUser.setLogin(fromUser);
+                    clientApp.getMyContacts().add(contactUser);
+                    tabs.getSelectionModel().select(contactsTab);
+                }
+            });
+        }
+    }
+
+    /**
+     * Shows chat invitation alert
+     * @param alertTitle
+     * @param alertContentText
+     * @return
+     */
+    private boolean showInvitationAlert(String alertTitle, String alertContentText) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(clientApp.getPrimaryStage());
+        alert.setTitle(alertTitle);
+        alert.setHeaderText(null);
+        alert.setContentText(alertContentText);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
