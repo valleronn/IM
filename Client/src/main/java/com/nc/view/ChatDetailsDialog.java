@@ -5,10 +5,12 @@ import com.nc.controller.ClientController;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 
 public class ChatDetailsDialog {
     @FXML
@@ -21,11 +23,25 @@ public class ChatDetailsDialog {
     private Label banLabel;
     @FXML
     private Label warningLabel;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button removeButton;
+    @FXML
+    private Button banButton;
+    @FXML
+    private Button unBanButton;
     private Stage dialogStage;
     private ClientApp clientApp;
+    private User user;
     private User chatContact;
     private ChatRoom chatRoom;
     private ClientController client;
+
+    public void setUser(User user) {
+        this.user = user;
+        hideAdminButtonsIfNotAdmin();
+    }
 
     public void setChatContact(User chatContact) {
         this.chatContact = chatContact;
@@ -72,13 +88,25 @@ public class ChatDetailsDialog {
         }
     }
 
+    private void hideAdminButtonsIfNotAdmin() {
+        if (!user.getLogin().equals("admin")) {
+            addButton.setVisible(false);
+            removeButton.setVisible(false);
+            banButton.setVisible(false);
+            unBanButton.setVisible(false);
+        }
+    }
+
     /**
      * Adds a user to a group chat click event.
      */
     @FXML
-    public void addUserToGroupChatHandler() {
+    public void addUserToGroupChatHandler() throws IOException {
         if (chatRoom != null) {
-            clientApp.createNewChatDialog(chatRoom);
+            boolean addClicked = clientApp.createNewChatDialog(chatRoom);
+            if (addClicked) {
+                client.inviteUsersToGroupChat(chatRoom.getUsers(), chatRoom.getChatName());
+            }
         }
     }
 

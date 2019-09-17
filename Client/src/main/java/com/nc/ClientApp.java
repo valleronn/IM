@@ -230,7 +230,7 @@ public class ClientApp extends Application {
     /**
      * Initializes Chat Details dialog.
      */
-    public void showChatDetailsDialog(User user, ChatRoom chatRoom) {
+    public void showChatDetailsDialog(User user, User contact, ChatRoom chatRoom) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(ClientApp.class.getResource(CHAT_DETAILS_DIALOG));
@@ -245,9 +245,10 @@ public class ClientApp extends Application {
 
             ChatDetailsDialog controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setChatContact(user);
+            controller.setChatContact(contact);
             controller.setChatRoom(chatRoom);
             controller.setClientApp(this);
+            controller.setUser(user);
             controller.setClientController(client);
             dialogStage.showAndWait();
         } catch (IOException e) {

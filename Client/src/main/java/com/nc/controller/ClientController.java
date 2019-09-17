@@ -177,7 +177,7 @@ public class ClientController {
     public void inviteUsersToGroupChat(ObservableList<User> groupChatContacts, String from) throws IOException {
         String usersToString = messageController.convertContactsToString(groupChatContacts).toString();
         Message inviteMessage = new Message();
-        inviteMessage.setType(MessageType.INVITEUSERTOCHAT);
+        inviteMessage.setType(MessageType.INVITEUSERSTOGROUPCHAT);
         inviteMessage.setTo(usersToString);
         inviteMessage.setFrom(from);
         String cmd = messageController.createMessage(inviteMessage);

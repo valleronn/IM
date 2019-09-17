@@ -273,17 +273,17 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             selectedContact = myChatList.getSelectionModel().getSelectedItem();
             if (isChatRoom()) {
                 selectedChat = (ChatRoom) myChatList.getSelectionModel().getSelectedItem();
-                clientApp.showChatDetailsDialog(null, selectedChat);
+                clientApp.showChatDetailsDialog(user, null, selectedChat);
             } else {
-                clientApp.showChatDetailsDialog(selectedContact, null);
+                clientApp.showChatDetailsDialog(user, selectedContact, null);
             }
         } else {
             selectedContact = myContactsList.getSelectionModel().getSelectedItem();
             if (isChatRoom()) {
                 selectedChat = (ChatRoom) myContactsList.getSelectionModel().getSelectedItem();
-                clientApp.showChatDetailsDialog(null, selectedChat);
+                clientApp.showChatDetailsDialog(user, null, selectedChat);
             } else {
-                clientApp.showChatDetailsDialog(selectedContact, null);
+                clientApp.showChatDetailsDialog(user, selectedContact, null);
             }
         }
     }
@@ -362,6 +362,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
                     chatRoom.setChatName(fromUser);
                     chatRoom.setUsers(groupChatContacts);
                     clientApp.getMyChatContacts().add(chatRoom);
+                    tabs.getSelectionModel().select(chatsTab);
                     try {
                         client.joinGroupChat(chatRoom.getChatName());
                     } catch (IOException e) {

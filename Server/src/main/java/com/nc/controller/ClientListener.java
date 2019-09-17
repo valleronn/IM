@@ -99,15 +99,14 @@ public class ClientListener extends Thread {
     }
 
     private void handleJoinGroupChat(Message message) {
-        boolean chatExists = false;
-        for(ChatRoom chatRoom: server.getChatRooms()) {
-            if (chatRoom.getChatName().equals(message.getBody())) {
-                chatExists = true;
-            }
-        }
-        if (!chatExists) {
+        String chatRoomName = message.getBody();
+        if (server.chatExists(chatRoomName)) {
+            ChatRoom chatRoom = server.getChatRoomByName(chatRoomName);
+            chatRoom.addUser(this.getUser());
+        } else {
             ChatRoom chatRoom = new ChatRoom();
             chatRoom.setChatName(message.getBody());
+            chatRoom.addUser(this.getUser());
             server.getChatRooms().add(chatRoom);
         }
     }
@@ -139,7 +138,9 @@ public class ClientListener extends Thread {
         String[] recipientsArr = recipients.split("\\;");
         for(String login: recipientsArr) {
             for(ClientListener listener: server.getListenerList()) {
-                if (listener.getUser().getLogin().equals(login)) {
+                String currUser = listener.getUser().getLogin();
+                if (currUser.equals(login)
+                    && !server.getChatRoomByName(sender).containsUser(currUser)) {
                     listener.send(inviteMessage);
                 }
             }

@@ -16,7 +16,7 @@
       <Label fx:id="warningLabel" text="Label" textFill="#e40a0a" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="10.0" />
       <HBox spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#addUserToGroupChatHandler" text="Add" />
+            <Button fx:id="addButton" mnemonicParsing="false" onAction="#addUserToGroupChatHandler" text="Add" />
             <Button fx:id="removeButton" mnemonicParsing="false" onAction="#removeUserFromGroupChatHandler" text="Remove" />
             <Button fx:id="banButton" mnemonicParsing="false" onAction="#banUserHandler" text="Ban" />
             <Button fx:id="unBanButton" mnemonicParsing="false" onAction="#unBanUserHandler" text="UnBan" />

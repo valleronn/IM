@@ -22,6 +22,19 @@ public class ChatRoom extends User {
         super.setLogin(chatName);
     }
 
+    public boolean containsUser(String login) {
+        for(User user: users) {
+            if (user.getLogin().equals(login)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addUser(User user) {
+        users.add(user);
+    }
+
     public ObservableList<User> getUsers() {
         return users;
     }

@@ -84,6 +84,27 @@ public class Server extends Thread {
         return chatRooms;
     }
 
+    public boolean chatExists(String chatRoom) {
+        boolean chatExists = false;
+        for(ChatRoom room: chatRooms) {
+            if (room.getChatName().equals(chatRoom)) {
+                chatExists = true;
+            }
+        }
+        return chatExists;
+    }
+
+    public ChatRoom getChatRoomByName(String chatName) {
+        ChatRoom currChatRomm = new ChatRoom();
+        for(ChatRoom chatRoom: chatRooms) {
+            if (chatRoom.getChatName().equals(chatName)) {
+                currChatRomm = chatRoom;
+                return currChatRomm;
+            }
+        }
+        return currChatRomm;
+    }
+
     public BanList getBanList() {
         return banList;
     }
