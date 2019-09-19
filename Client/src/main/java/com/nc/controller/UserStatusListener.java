@@ -10,4 +10,5 @@ public interface UserStatusListener {
     void online(String user);
     void offline(String user);
     void invite(String fromUser, ObservableList<User> groupChatContacts);
+    void removeFromChat(String chatName);
 }

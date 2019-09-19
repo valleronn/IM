@@ -209,6 +209,20 @@ public class ClientController {
     }
 
     /**
+     * Sends REMOVEUSERFROMGROUPCHAT
+     * @param chatName chat name
+     * @param user user to remove
+     */
+    public void removeUserFromGroupChat(String chatName, String user) throws IOException {
+        Message removeUserMessage = new Message();
+        removeUserMessage.setType(MessageType.REMOVEUSERFROMGROUPCHAT);
+        removeUserMessage.setFrom(chatName);
+        removeUserMessage.setTo(user);
+        String cmd = messageController.createMessage(removeUserMessage);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
      * Launches a new thread to read messages from server.
      */
     public void messageReader() {
@@ -243,6 +257,8 @@ public class ClientController {
                         setProfileUpdated(true);
                     } else if ("invitation".equalsIgnoreCase(msgStatus)) {
                         handleInvitation(message);
+                    } else if ("removed from chat".equalsIgnoreCase(msgStatus)) {
+                        handleRemoveFromChat(message);
                     }
                 }
             }
@@ -284,6 +300,13 @@ public class ClientController {
         ObservableList<User> groupChatContacts = messageController.extractContactsFromString(listOfGroupChatUsers);
         for(UserStatusListener listener: userStatusListeners) {
             listener.invite(from, groupChatContacts);
+        }
+    }
+
+    private synchronized void handleRemoveFromChat(Message message) {
+        String chatName = message.getFrom();
+        for(UserStatusListener listener: userStatusListeners) {
+            listener.removeFromChat(chatName);
         }
     }
 

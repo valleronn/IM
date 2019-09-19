@@ -35,6 +35,10 @@ public class ChatRoom extends User {
         users.add(user);
     }
 
+    public void removeUser(User user) {
+        users.remove(user);
+    }
+
     public ObservableList<User> getUsers() {
         return users;
     }

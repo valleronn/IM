@@ -80,6 +80,9 @@ public class ClientListener extends Thread {
                     case "INVITEUSERSTOGROUPCHAT":
                         handleInviteUserToGroupChat(message);
                         break;
+                    case "REMOVEUSERFROMGROUPCHAT":
+                        handleRemoveUserFromGroupChat(message);
+                        break;
                     default:
                         String msg = "Unknown " + msgType + "\n";
                         outputStream.write(msg.getBytes());
@@ -143,6 +146,23 @@ public class ClientListener extends Thread {
                     && !server.getChatRoomByName(sender).containsUser(currUser)) {
                     listener.send(inviteMessage);
                 }
+            }
+        }
+    }
+
+    public void handleRemoveUserFromGroupChat(Message message) throws IOException {
+        String sender = message.getFrom();
+        String recipient = message.getTo();
+        Message removeMessage = new Message();
+        removeMessage.setFrom(sender);
+        removeMessage.setTo(recipient);
+        removeMessage.setType(MessageType.REMOVEUSERFROMGROUPCHAT);
+        removeMessage.setStatus("removed from chat");
+        for(ClientListener listener: server.getListenerList()) {
+            if (listener.isMemberOfChat(sender)
+                    && listener.getUser().getLogin().equals(recipient)) {
+                server.getChatRoomByName(sender).removeUser(listener.getUser());
+                listener.send(removeMessage);
             }
         }
     }

@@ -114,10 +114,11 @@ public class ChatDetailsDialog {
      * Removes a user from a group chat click event.
      */
     @FXML
-    public void removeUserFromGroupChatHandler() {
+    public void removeUserFromGroupChatHandler() throws IOException {
         User user = chatList.getSelectionModel().getSelectedItem();
         if (user != null) {
             chatList.getItems().remove(user);
+            client.removeUserFromGroupChat(chatRoom.getChatName(), user.getLogin());
         } else {
             warningLabel.setVisible(true);
             warningLabel.setText("Please select a user to remove");

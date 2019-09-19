@@ -352,12 +352,13 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * Invites user to start a new chat
      * @param fromUser sender user
      */
+    @Override
     public void invite(String fromUser, ObservableList<User> groupChatContacts) {
         if (fromUser.startsWith("#")) {
             Platform.runLater(() -> {
                 String alertTitle = "Start " + fromUser + " group chat?";
                 String alertContentText = "Would you like to join " + fromUser + " group chat?";
-                if (showInvitationAlert(alertTitle, alertContentText)){
+                if (showInvitationAlert(alertTitle, alertContentText)) {
                     ChatRoom chatRoom = new ChatRoom();
                     chatRoom.setChatName(fromUser);
                     chatRoom.setUsers(groupChatContacts);
@@ -403,5 +404,27 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Removes user from chat
+     * @param chatName chat name
+     */
+    @Override
+    public void removeFromChat(String chatName) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initOwner(clientApp.getPrimaryStage());
+            alert.setTitle("Chat Removal");
+            alert.setHeaderText(null);
+            alert.setContentText("You have been removed from " + chatName);
+            alert.showAndWait();
+            ObservableList<User> contacts = clientApp.getMyChatContacts();
+            for(User contactUser: contacts) {
+                if (contactUser.getLogin().equals(chatName)) {
+                    contacts.remove(contactUser);
+                }
+            }
+        });
     }
 }
