@@ -259,7 +259,7 @@ public class ClientApp extends Application {
 
 
     public static void main(String[] args) {
-        System.out.println("Hello from messenger!");
+        LOGGER.info("Hello from messenger!");
         launch(args);
     }
 }
