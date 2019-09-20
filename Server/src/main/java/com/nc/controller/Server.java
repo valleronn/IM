@@ -38,8 +38,7 @@ public class Server extends Thread {
 
     @Override
     public void run() {
-        try {
-            ServerSocket serverSocket = new ServerSocket(port);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
                 System.out.println("About to accept client connection");
                 Socket clientSocket = serverSocket.accept();

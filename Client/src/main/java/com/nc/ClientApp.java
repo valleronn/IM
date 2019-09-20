@@ -71,7 +71,9 @@ public class ClientApp extends Application {
         showLoginDialog();
         primaryStage.setOnCloseRequest(event -> {
             try {
-                client.logoff();
+                if (client != null) {
+                    client.logoff();
+                }
             } catch (IOException e) {
                 LOGGER.error("Client start error: ", e);
             } finally {

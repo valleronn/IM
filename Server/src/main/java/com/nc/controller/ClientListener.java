@@ -41,6 +41,12 @@ public class ClientListener extends Thread {
             handleClientConnection();
         } catch (IOException e) {
             LOGGER.error("handleClientConnection error: ", e);
+        } finally {
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                LOGGER.error("Fails to close clientSocket properly: ", e);
+            }
         }
     }
 
@@ -97,7 +103,6 @@ public class ClientListener extends Thread {
             }
 
         }
-        clientSocket.close();
     }
 
     private void handleLeaveGroupChat(Message message) {
@@ -244,14 +249,16 @@ public class ClientListener extends Thread {
         Message offlineMsg = new Message();
         offlineMsg.setStatus("offline");
         offlineMsg.setType(MessageType.MSG);
-        offlineMsg.setFrom(getUser().getLogin());
-        for(ClientListener listener: listenerList) {
-            if (!getUser().getLogin().equals(listener.getUser().getLogin())) {
-                listener.send(offlineMsg);
+        if (getUser() != null) {
+            offlineMsg.setFrom(getUser().getLogin());
+            for(ClientListener listener: listenerList) {
+                if (!getUser().getLogin().equals(listener.getUser().getLogin())) {
+                    listener.send(offlineMsg);
+                }
             }
+            clientSocket.close();
+            System.out.println(getUser().getLogin() + " has disconnected");
         }
-        clientSocket.close();
-        System.out.println(getUser().getLogin() + " has disconnected");
     }
 
     private void handleRegister(OutputStream outputStream, Message message) throws IOException {
@@ -264,7 +271,6 @@ public class ClientListener extends Thread {
                 msg.setStatus("Registration failed");
                 outputStream.write(messageController.createMessage(msg).getBytes());
                 server.removeListener(this);
-                clientSocket.close();
                 return;
             }
         }
