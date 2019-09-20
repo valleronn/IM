@@ -116,6 +116,9 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             } else {
                 showChatDetailsMenuItem.setVisible(true);
             }
+            if (user.isBanned()) {
+                makeChatElementsVisible(false);
+            }
         } else {
             contactNameLabel.setText("");
             chatTextArea.setText("");
@@ -388,8 +391,8 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
 
     /**
      * Shows chat invitation alert
-     * @param alertTitle
-     * @param alertContentText
+     * @param alertTitle alert title
+     * @param alertContentText alert content text
      * @return
      */
     private boolean showInvitationAlert(String alertTitle, String alertContentText) {
@@ -413,18 +416,57 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @Override
     public void removeFromChat(String chatName) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.initOwner(clientApp.getPrimaryStage());
-            alert.setTitle("Chat Removal");
-            alert.setHeaderText(null);
-            alert.setContentText("You have been removed from " + chatName);
-            alert.showAndWait();
+            String alertTitle = "Chat Removal";
+            String alertContextText = "You have been removed from " + chatName;
+            showInfoAlert(alertTitle, alertContextText);
             ObservableList<User> contacts = clientApp.getMyChatContacts();
             for(User contactUser: contacts) {
                 if (contactUser.getLogin().equals(chatName)) {
                     contacts.remove(contactUser);
                 }
             }
+        });
+    }
+
+    /**
+     * Shows information alert
+     * @param alertTitle alert title
+     * @param alertContentText alert content text
+     */
+    private void showInfoAlert(String alertTitle, String alertContentText) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(clientApp.getPrimaryStage());
+        alert.setTitle(alertTitle);
+        alert.setHeaderText(null);
+        alert.setContentText(alertContentText);
+        alert.showAndWait();
+    }
+
+    /**
+     * Bans user
+     */
+    @Override
+    public void banned() {
+        Platform.runLater(() -> {
+            String alertTitle = "You have been banned!";
+            String alertContentText = "You have been banned!";
+            showInfoAlert(alertTitle, alertContentText);
+            user.setBanned(true);
+            makeChatElementsVisible(false);
+        });
+    }
+
+    /**
+     * Unban user
+     */
+    @Override
+    public void unbanned() {
+        Platform.runLater(() -> {
+            String alertTitle = "Ban removal";
+            String alertContentText = "The ban has been removed";
+            showInfoAlert(alertTitle, alertContentText);
+            user.setBanned(false);
+            makeChatElementsVisible(true);
         });
     }
 }

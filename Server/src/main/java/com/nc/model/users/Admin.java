@@ -19,11 +19,13 @@ public class Admin extends User {
         server.getUsers().remove(user);
     }
 
-    public void addToBanList(User user) {
+    public void addToBanList(String login) {
+        User user = server.getUser(login);
         banList.addBan(user);
     }
 
-    public void removeFromBanlist(User user) {
+    public void removeFromBanList(String login) {
+        User user = server.getUser(login);
         banList.removeBan(user);
     }
 }

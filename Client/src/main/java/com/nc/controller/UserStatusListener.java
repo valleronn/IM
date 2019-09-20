@@ -11,4 +11,6 @@ public interface UserStatusListener {
     void offline(String user);
     void invite(String fromUser, ObservableList<User> groupChatContacts);
     void removeFromChat(String chatName);
+    void banned();
+    void unbanned();
 }

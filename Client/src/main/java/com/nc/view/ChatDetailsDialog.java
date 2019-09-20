@@ -125,14 +125,35 @@ public class ChatDetailsDialog {
         }
     }
 
+    /**
+     * Adds selected contact to a ban list
+     */
     @FXML
-    public void banUserHandler() {
-
+    public void banUserHandler() throws IOException {
+        User user = chatList.getSelectionModel().getSelectedItem();
+        if (user != null) {
+            banLabel.setVisible(true);
+            banLabel.setText("Banned");
+            client.banUser(user.getLogin());
+        } else {
+            warningLabel.setVisible(true);
+            warningLabel.setText("Please select a user to add to the ban list");
+        }
     }
 
+    /**
+     * Removes selected contact from the ban list
+     */
     @FXML
-    public void unBanUserHandler() {
-
+    public void unBanUserHandler() throws IOException {
+        User user = chatList.getSelectionModel().getSelectedItem();
+        if (user != null) {
+            banLabel.setVisible(false);
+            client.unBanUser(user.getLogin());
+        } else {
+            warningLabel.setVisible(true);
+            warningLabel.setText("Please select a user to add to the ban list");
+        }
     }
 
     /**

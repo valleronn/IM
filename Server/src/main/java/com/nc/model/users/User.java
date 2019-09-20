@@ -11,6 +11,7 @@ public class User {
     private String password;
     private Date regDate;
     private boolean active;
+    private boolean banned;
     private List<String> messageList = new LinkedList<>();
 
     public User() {
@@ -65,6 +66,14 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
     }
 
     public void setMessageList(List<String> messageList) {

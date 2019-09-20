@@ -209,7 +209,7 @@ public class ClientController {
     }
 
     /**
-     * Sends REMOVEUSERFROMGROUPCHAT
+     * Sends REMOVEUSERFROMGROUPCHAT message
      * @param chatName chat name
      * @param user user to remove
      */
@@ -219,6 +219,31 @@ public class ClientController {
         removeUserMessage.setFrom(chatName);
         removeUserMessage.setTo(user);
         String cmd = messageController.createMessage(removeUserMessage);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
+     * Sends ADDTOBANLIST message
+     * @param user user to add to a ban list
+     */
+    public void banUser(String user) throws IOException {
+        Message addToBanListMessage = new Message();
+        addToBanListMessage.setType(MessageType.ADDTOBANLIST);
+        addToBanListMessage.setTo(user);
+        String cmd = messageController.createMessage(addToBanListMessage);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
+     * Sends REMOVEFROMBANLIST message
+     * @param user user to remove from the ban list
+     * @throws IOException
+     */
+    public void unBanUser(String user) throws IOException {
+        Message removeFromBanListMessage = new Message();
+        removeFromBanListMessage.setType(MessageType.REMOVEFROMBANLIST);
+        removeFromBanListMessage.setTo(user);
+        String cmd = messageController.createMessage(removeFromBanListMessage);
         outputStream.write(cmd.getBytes());
     }
 
@@ -259,6 +284,10 @@ public class ClientController {
                         handleInvitation(message);
                     } else if ("removed from chat".equalsIgnoreCase(msgStatus)) {
                         handleRemoveFromChat(message);
+                    } else if ("banned".equalsIgnoreCase(msgStatus)) {
+                        handleBanned();
+                    } else if ("unbanned".equalsIgnoreCase(msgStatus)) {
+                        handleUnBanned();
                     }
                 }
             }
@@ -307,6 +336,18 @@ public class ClientController {
         String chatName = message.getFrom();
         for(UserStatusListener listener: userStatusListeners) {
             listener.removeFromChat(chatName);
+        }
+    }
+
+    private synchronized void handleBanned() {
+        for(UserStatusListener listener: userStatusListeners) {
+            listener.banned();
+        }
+    }
+
+    private synchronized void handleUnBanned() {
+        for(UserStatusListener listener: userStatusListeners) {
+            listener.unbanned();
         }
     }
 
