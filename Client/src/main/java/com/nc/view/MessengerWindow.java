@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Optional;
 
 import org.apache.log4j.Logger;
@@ -307,18 +308,22 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
 
     /**
      * Removes a user from a collection when offline
-     * @param user User that goes online
+     * @param login User that goes online
      */
     @Override
-    public void offline(String user) {
-        for (User u: clientApp.getUsers()) {
-            if (u.getLogin().equals(user)) {
-                clientApp.getUsers().remove(u);
-                if (myContactsList.getItems().contains(u)) {
-                    selectUser();
+    public void offline(String login) {
+        Platform.runLater(() -> {
+            Iterator<User> userIterator = clientApp.getUsers().iterator();
+            while (userIterator.hasNext()) {
+                User user = userIterator.next();
+                if (user.getLogin().equals(login)) {
+                    userIterator.remove();
+                    if (myContactsList.getItems().contains(user)) {
+                        selectUser();
+                    }
                 }
             }
-        }
+        });
     }
 
     /**
@@ -420,11 +425,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             String alertContextText = "You have been removed from " + chatName;
             showInfoAlert(alertTitle, alertContextText);
             ObservableList<User> contacts = clientApp.getMyChatContacts();
-            for(User contactUser: contacts) {
-                if (contactUser.getLogin().equals(chatName)) {
-                    contacts.remove(contactUser);
-                }
-            }
+            contacts.removeIf(contactUser -> (contactUser.getLogin().equals(chatName)));
         });
     }
 
