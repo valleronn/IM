@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -29,6 +30,7 @@ public class ClientApp extends Application {
     private static final String CREATE_NEW_CHAT_DIALOG = "view/CreateNewChatDialog.fxml";
     private static final String EDIT_PROFILE_DIALOG = "view/EditProfileDialog.fxml";
     private static final String CHAT_DETAILS_DIALOG = "view/ChatDetailsDialog.fxml";
+    private static final String ICON = "/icon.png";
 
     private Stage primaryStage;
     private ObservableList<User> users = FXCollections.observableArrayList();
@@ -88,6 +90,7 @@ public class ClientApp extends Application {
             AnchorPane loginDialog = loader.load();
             Scene scene = new Scene(loginDialog);
             primaryStage.setScene(scene);
+            primaryStage.getIcons().add(new Image(ICON));
             primaryStage.show();
             LoginDialog controller = loader.getController();
             controller.setClientApp(this);
@@ -107,6 +110,7 @@ public class ClientApp extends Application {
             AnchorPane registerDialog = loader.load();
             Scene scene = new Scene(registerDialog);
             primaryStage.setScene(scene);
+            primaryStage.getIcons().add(new Image(ICON));
             primaryStage.show();
             RegisterDialog controller = loader.getController();
             controller.setClientApp(this);
@@ -130,6 +134,7 @@ public class ClientApp extends Application {
             controller.setClientApp(this);
             controller.setUser(user);
             controller.setClientController(client);
+            primaryStage.getIcons().add(new Image(ICON));
             primaryStage.show();
         } catch (IOException e) {
             LOGGER.error("Show messenger window error: ", e);
@@ -159,6 +164,7 @@ public class ClientApp extends Application {
             controller.setUser(user);
             controller.setClientApp(this);
             controller.setClientController(client);
+            dialogStage.getIcons().add(new Image(ICON));
             dialogStage.showAndWait();
             return controller.isOkClicked();
         } catch (IOException e) {
@@ -189,6 +195,7 @@ public class ClientApp extends Application {
             controller.setChatRoom(chatRoom);
             controller.setClientApp(this);
             controller.setClientController(client);
+            dialogStage.getIcons().add(new Image(ICON));
             dialogStage.showAndWait();
             return controller.isAddClicked();
         } catch (IOException e) {
@@ -218,6 +225,7 @@ public class ClientApp extends Application {
             controller.setUser(user);
             controller.setClientController(client);
             controller.setParentWindow(parentWindow);
+            dialogStage.getIcons().add(new Image(ICON));
             dialogStage.showAndWait();
             return controller.isSaveClicked();
         } catch (IOException e) {
@@ -250,6 +258,7 @@ public class ClientApp extends Application {
             controller.setClientApp(this);
             controller.setUser(user);
             controller.setClientController(client);
+            dialogStage.getIcons().add(new Image(ICON));
             dialogStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
