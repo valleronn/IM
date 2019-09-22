@@ -264,11 +264,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     }
 
     private boolean isChatRoom(User selectedChat) {
-        if (selectedChat.getLogin().startsWith("#")) {
-            return true;
-        } else {
-            return false;
-        }
+        return selectedChat.getLogin().startsWith("#");
     }
 
     /**
@@ -431,7 +427,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * Shows chat invitation alert
      * @param alertTitle alert title
      * @param alertContentText alert content text
-     * @return
+     * @return returns true or false
      */
     private boolean showInvitationAlert(String alertTitle, String alertContentText) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -440,11 +436,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         alert.setHeaderText(null);
         alert.setContentText(alertContentText);
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            return true;
-        } else {
-            return false;
-        }
+        return result.get() == ButtonType.OK;
     }
 
     /**

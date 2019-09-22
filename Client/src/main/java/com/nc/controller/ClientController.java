@@ -66,7 +66,7 @@ public class ClientController {
      * @param sendTo recipient
      * @param sentFrom sender
      * @param msgBody message body
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public void sendChatMessage(String sendTo, String sentFrom, String msgBody) throws IOException {
         Message chatMessage = new Message();
@@ -82,7 +82,7 @@ public class ClientController {
      * @param login login
      * @param password password
      * @return true or false
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public boolean register(String login, String password) throws IOException {
         boolean result = false;
@@ -106,7 +106,7 @@ public class ClientController {
      * @param login login
      * @param password password
      * @return returns true or false
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public boolean login(String login, String password) throws IOException {
         boolean result = false;
@@ -130,7 +130,7 @@ public class ClientController {
      * @param login initial login
      * @param newLogin new login
      * @param password new password
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public void updateProfile(String login, String newLogin, String password) throws IOException {
         Message updateProfileMessage = new Message();
@@ -144,7 +144,7 @@ public class ClientController {
 
     /**
      * Sends logoff message
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public void logoff() throws IOException {
         Message logoffMessage = new Message();
@@ -157,7 +157,7 @@ public class ClientController {
      * Invites user to chat
      * @param to recipient
      * @param from sender
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public void inviteUserToChat(String to, String from) throws IOException {
         Message inviteMessage = new Message();
@@ -172,7 +172,7 @@ public class ClientController {
      * Invites users to Group Chat
      * @param groupChatContacts list of group chat contacts
      * @param from sender
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public void inviteUsersToGroupChat(ObservableList<User> groupChatContacts, String from) throws IOException {
         String usersToString = messageController.convertContactsToString(groupChatContacts).toString();
@@ -186,7 +186,7 @@ public class ClientController {
 
     /**
      * Sends JOINGROUPCHAT message
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public void joinGroupChat(String chatName) throws IOException {
         Message joinGroupChatMessage = new Message();
@@ -198,7 +198,7 @@ public class ClientController {
 
     /**
      * Sends LEAVEGROUPCHAT message
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public void leaveGroupChat(String chatName) throws IOException {
         Message leaveGroupChatMessage = new Message();
@@ -212,6 +212,7 @@ public class ClientController {
      * Sends REMOVEUSERFROMGROUPCHAT message
      * @param chatName chat name
      * @param user user to remove
+     * @throws IOException throws IOException
      */
     public void removeUserFromGroupChat(String chatName, String user) throws IOException {
         Message removeUserMessage = new Message();
@@ -225,6 +226,7 @@ public class ClientController {
     /**
      * Sends ADDTOBANLIST message
      * @param user user to add to a ban list
+     * @throws IOException throws IOException
      */
     public void banUser(String user) throws IOException {
         Message addToBanListMessage = new Message();
@@ -237,7 +239,7 @@ public class ClientController {
     /**
      * Sends REMOVEFROMBANLIST message
      * @param user user to remove from the ban list
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     public void unBanUser(String user) throws IOException {
         Message removeFromBanListMessage = new Message();
@@ -365,15 +367,7 @@ public class ClientController {
         userStatusListeners.add(listener);
     }
 
-    public synchronized void removeUserStatusListener(UserStatusListener listener) {
-        userStatusListeners.remove(listener);
-    }
-
     public synchronized void addMessageListener(MessageListener listener) {
         messageListeners.add(listener);
-    }
-
-    public synchronized void removeMessageListener(MessageListener listener) {
-        messageListeners.remove(listener);
     }
 }

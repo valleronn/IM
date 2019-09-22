@@ -196,7 +196,6 @@ public class ClientApp extends Application {
             controller.setDialogStage(dialogStage);
             controller.setChatRoom(chatRoom);
             controller.setClientApp(this);
-            controller.setClientController(client);
             dialogStage.getIcons().add(new Image(ICON));
             dialogStage.showAndWait();
             return controller.isAddClicked();

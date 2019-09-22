@@ -39,14 +39,9 @@ public class AddContactsDialog {
         this.client = client;
     }
 
-    @FXML
-    private void initialize() {
-
-    }
-
     /**
      * Returns true if Add clicked, otherwise false
-     * @return
+     * @return returns okClicked
      */
     public boolean isOkClicked() {
         return okClicked;

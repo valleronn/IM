@@ -101,7 +101,6 @@ public class ClientListener extends Thread {
                         outputStream.write(msg.getBytes());
                 }
             }
-
         }
     }
 
@@ -356,14 +355,12 @@ public class ClientListener extends Thread {
 
     private void sendCurrUserAllOtherLogins(String login, List<ClientListener> listenerList) throws IOException {
         for(ClientListener listener: listenerList) {
-            if (listener.getUser() != null) {
-                if (!login.equals(listener.getUser().getLogin())) {
-                    Message onlineMsg1 = new Message();
-                    onlineMsg1.setStatus("online");
-                    onlineMsg1.setType(MessageType.ONLINE);
-                    onlineMsg1.setFrom(listener.getUser().getLogin());
-                    send(onlineMsg1);
-                }
+            if (listener.getUser() != null && !login.equals(listener.getUser().getLogin())) {
+                Message onlineMsg1 = new Message();
+                onlineMsg1.setStatus("online");
+                onlineMsg1.setType(MessageType.ONLINE);
+                onlineMsg1.setFrom(listener.getUser().getLogin());
+                send(onlineMsg1);
             }
         }
     }

@@ -28,18 +28,13 @@ public class LoginDialog {
         this.client = client;
     }
 
-    @FXML
-    private void initialize() {
-
-    }
-
     public void setClientApp(ClientApp clientApp) {
         this.clientApp = clientApp;
     }
 
     /**
      * SignIn button click event
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     @FXML
     private void signInHandler() throws IOException {

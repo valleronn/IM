@@ -38,7 +38,7 @@ public class RegisterDialog {
 
     /**
      * SignUp button click event.
-     * @throws IOException
+     * @throws IOException throws IOException
      */
     @FXML
     private void signUpHandler() throws IOException {

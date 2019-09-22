@@ -163,7 +163,4 @@ public class ChatDetailsDialog {
     public void closeDialogHandler() {
         dialogStage.close();
     }
-
-
-
 }

@@ -5,9 +5,8 @@ import com.nc.controller.Server;
 import javafx.collections.ObservableList;
 
 public class Admin extends User {
-
-    Server server;
-    BanList banList;
+    private Server server;
+    private BanList banList;
 
     public Admin(String login, String password, Date regDate, Server server, BanList banList) {
         super(login, password, regDate);

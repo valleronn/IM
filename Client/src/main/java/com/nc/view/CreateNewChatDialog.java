@@ -1,7 +1,6 @@
 package com.nc.view;
 
 import com.nc.ClientApp;
-import com.nc.controller.ClientController;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import javafx.collections.ObservableList;
@@ -23,7 +22,6 @@ public class CreateNewChatDialog {
     private Label warningLabel;
     private Stage dialogStage;
     private ClientApp clientApp;
-    private ClientController client;
     private ChatRoom chatRoom;
     private boolean addClicked = false;
 
@@ -39,22 +37,13 @@ public class CreateNewChatDialog {
         }
     }
 
-    public void setClientController(ClientController client) {
-        this.client = client;
-    }
-
     public void setChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;
     }
 
-    @FXML
-    private void initialize() {
-
-    }
-
     /**
      * Returns true if Add clicked, otherwise false
-     * @return
+     * @return returns addClicked
      */
     public boolean isAddClicked() {
         return addClicked;
