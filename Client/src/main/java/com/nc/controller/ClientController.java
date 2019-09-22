@@ -317,9 +317,10 @@ public class ClientController {
 
     private synchronized void handleMessage(Message message) {
         String from = message.getFrom();
+        String to = message.getTo();
         String body = message.getBody();
         for (MessageListener listener: messageListeners) {
-            listener.onMessage(from, body);
+            listener.onMessage(from, to, body);
         }
     }
 

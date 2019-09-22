@@ -104,6 +104,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      */
     private void showChatDetails(User contactUser) {
         if (contactUser != null) {
+            selectedContact = contactUser;
             makeChatElementsVisible(true);
             contactNameLabel.setText(contactUser.getLogin());
             messageProcessor(contactUser);
@@ -111,8 +112,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
                 makeChatElementsVisible(false);
                 contactNameLabel.setText(contactUser + " is currently offline");
             }
-            selectedContact = contactUser;
-            if (!isChatRoom()) {
+            if (!isChatRoom(contactUser)) {
                 showChatDetailsMenuItem.setVisible(false);
             } else {
                 showChatDetailsMenuItem.setVisible(true);
@@ -148,7 +148,9 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         for (String message: selectedContact.getMessageList()) {
             computedMessage += message + "\n";
         }
-        chatTextArea.setText(computedMessage);
+        if (this.selectedContact != null && this.selectedContact.equals(selectedContact)) {
+            chatTextArea.setText(computedMessage);
+        }
     }
 
     /**
@@ -167,10 +169,6 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      */
     @FXML
     private void sendMessageHandler(ActionEvent ae) {
-        User selectedContact = myContactsList.getSelectionModel().getSelectedItem();
-        if (selectedContact == null) {
-            selectedContact = myChatList.getSelectionModel().getSelectedItem();
-        }
         selectedContact.getMessageList().add(inputMessageTextField.getText());
         messageProcessor(selectedContact);
         try {
@@ -240,7 +238,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     private void leaveChatHandler() {
         if (chatsTab.isSelected()) {
             selectedContact = myChatList.getSelectionModel().getSelectedItem();
-            if (isChatRoom()) {
+            if (isChatRoom(selectedContact)) {
                 selectedChat = (ChatRoom) myChatList.getSelectionModel().getSelectedItem();
                 try {
                     client.leaveGroupChat(selectedChat.getChatName());
@@ -260,8 +258,8 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         }
     }
 
-    private boolean isChatRoom() {
-        if (selectedContact.getLogin().startsWith("#")) {
+    private boolean isChatRoom(User selectedChat) {
+        if (selectedChat.getLogin().startsWith("#")) {
             return true;
         } else {
             return false;
@@ -275,7 +273,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     public void showChatDetailsHandler() {
         if (chatsTab.isSelected()) {
             selectedContact = myChatList.getSelectionModel().getSelectedItem();
-            if (isChatRoom()) {
+            if (isChatRoom(selectedContact)) {
                 selectedChat = (ChatRoom) myChatList.getSelectionModel().getSelectedItem();
                 clientApp.showChatDetailsDialog(user, null, selectedChat);
             } else {
@@ -283,12 +281,34 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             }
         } else {
             selectedContact = myContactsList.getSelectionModel().getSelectedItem();
-            if (isChatRoom()) {
+            if (isChatRoom(selectedContact)) {
                 selectedChat = (ChatRoom) myContactsList.getSelectionModel().getSelectedItem();
                 clientApp.showChatDetailsDialog(user, null, selectedChat);
             } else {
                 clientApp.showChatDetailsDialog(user, selectedContact, null);
             }
+        }
+    }
+
+    /**
+     * Removes user selection on Contacts tab if
+     * Chats tab selected
+     */
+    @FXML
+    public void chatsTabClickHandler() {
+        if (myContactsList != null) {
+            myContactsList.getSelectionModel().clearSelection();
+        }
+    }
+
+    /**
+     * Removes user selection on Chats tab if
+     * Contacts tab selected
+     */
+    @FXML
+    public void contactsTabClickHandler() {
+        if (myChatList != null) {
+            myChatList.getSelectionModel().clearSelection();
         }
     }
 
@@ -345,14 +365,21 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
      * @param body message body
      */
     @Override
-    public void onMessage(String from, String body) {
-        User selectedContact = myContactsList.getSelectionModel().getSelectedItem();
-        if (selectedContact == null) {
-            selectedContact = myChatList.getSelectionModel().getSelectedItem();
-        }
-        if (selectedContact != null) {
-            selectedContact.getMessageList().add(from + ": " + body);
-            messageProcessor(selectedContact);
+    public void onMessage(String from, String to, String body) {
+        if (to.startsWith("#")) {
+            for(User user: clientApp.getMyChatContacts()) {
+                if (user.getLogin().equals(to)) {
+                    user.getMessageList().add(from + ": " + body);
+                    messageProcessor(user);
+                }
+            }
+        } else {
+            for(User user: clientApp.getMyChatContacts()) {
+                if (user.getLogin().equals(from)) {
+                    user.getMessageList().add(from + ": " + body);
+                    messageProcessor(user);
+                }
+            }
         }
     }
 
@@ -388,6 +415,7 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
                     User contactUser = new User();
                     contactUser.setLogin(fromUser);
                     clientApp.getMyContacts().add(contactUser);
+                    clientApp.getMyChatContacts().add(contactUser);
                     tabs.getSelectionModel().select(contactsTab);
                 }
             });

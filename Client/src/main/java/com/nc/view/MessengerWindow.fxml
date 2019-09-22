@@ -22,7 +22,7 @@
                   </Button>
                   <TabPane fx:id="tabs" prefHeight="798.0" prefWidth="395.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0">
                     <tabs>
-                      <Tab fx:id="chatsTab" text="Chats">
+                      <Tab fx:id="chatsTab" onSelectionChanged="#chatsTabClickHandler" text="Chats">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -48,7 +48,7 @@
                               </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab fx:id="contactsTab" text="Contacts">
+                      <Tab fx:id="contactsTab" onSelectionChanged="#contactsTabClickHandler" text="Contacts">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
