@@ -162,7 +162,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    public void handleRemoveUserFromGroupChat(Message message) throws IOException {
+    private void handleRemoveUserFromGroupChat(Message message) throws IOException {
         String sender = message.getFrom();
         String recipient = message.getTo();
         Message removeMessage = new Message();
@@ -170,22 +170,25 @@ public class ClientListener extends Thread {
         removeMessage.setTo(recipient);
         removeMessage.setType(MessageType.REMOVEUSERFROMGROUPCHAT);
         removeMessage.setStatus("removed from chat");
+        if (server.isAdmin(user)) {
+            Admin admin = (Admin) user;
+            admin.removeUserFromGroupChat(recipient);
+        }
         for(ClientListener listener: server.getListenerList()) {
             if (listener.isMemberOfChat(sender)
                     && listener.getUser().getLogin().equals(recipient)) {
-                server.getChatRoomByName(sender).removeUser(listener.getUser());
                 listener.send(removeMessage);
             }
         }
     }
 
-    public void handleBanUser(Message message) throws IOException {
+    private void handleBanUser(Message message) throws IOException {
         String recipient = message.getTo();
         Message banMessage = new Message();
         banMessage.setTo(recipient);
         banMessage.setType(MessageType.ADDTOBANLIST);
         banMessage.setStatus("banned");
-        if (user.getLogin().equals("admin") && user instanceof Admin) {
+        if (server.isAdmin(user)) {
             Admin admin = (Admin) user;
             admin.addToBanList(recipient);
         }
@@ -196,13 +199,13 @@ public class ClientListener extends Thread {
         }
     }
 
-    public void handleUnBanUser(Message message) throws IOException {
+    private void handleUnBanUser(Message message) throws IOException {
         String recipient = message.getTo();
         Message unBanMessage = new Message();
         unBanMessage.setTo(recipient);
         unBanMessage.setType(MessageType.ADDTOBANLIST);
         unBanMessage.setStatus("unbanned");
-        if (user.getLogin().equals("admin") && user instanceof Admin) {
+        if (server.isAdmin(user)) {
             Admin admin = (Admin) user;
             admin.removeFromBanList(recipient);
         }

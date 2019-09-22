@@ -20,6 +20,7 @@ public class Server extends Thread {
 
     private int port;
     private User user;
+    private Admin admin;
     private List<ClientListener> listenerList = new ArrayList<>();
     private Set<User> users = new HashSet<>();
     private Set<ChatRoom> chatRooms = new HashSet<>();
@@ -32,8 +33,8 @@ public class Server extends Thread {
         } catch (IOException e) {
             LOGGER.error("Error reading file with users: ", e);
         }
-        user = new Admin("admin", "admin", new Date(), this, banList);
-        users.add(user);
+        admin = new Admin("admin", "admin", new Date(), this, banList);
+        users.add(admin);
     }
 
     @Override
@@ -106,5 +107,13 @@ public class Server extends Thread {
 
     public BanList getBanList() {
         return banList;
+    }
+
+    public boolean isAdmin(User user) {
+        if (user instanceof Admin) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

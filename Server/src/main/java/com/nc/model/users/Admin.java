@@ -2,6 +2,7 @@ package com.nc.model.users;
 
 import java.util.Date;
 import com.nc.controller.Server;
+import javafx.collections.ObservableList;
 
 public class Admin extends User {
 
@@ -14,9 +15,11 @@ public class Admin extends User {
         this.banList = server.getBanList();
     }
 
-    public void remove(String login) {
-        User user = server.getUser(login);
-        server.getUsers().remove(user);
+    public void removeUserFromGroupChat(String login) {
+        for(ChatRoom chatRoom: server.getChatRooms()) {
+            ObservableList<User> usersInChat = chatRoom.getUsers();
+            usersInChat.removeIf(user -> (user.getLogin().equals(login)));
+        }
     }
 
     public void addToBanList(String login) {
