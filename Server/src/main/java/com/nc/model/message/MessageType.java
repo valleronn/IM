@@ -5,6 +5,8 @@ public enum MessageType {
     LOGOFF,
     REGISTER,
     MSG,
+    ONLINE,
+    OFFLINE,
     JOINGROUPCHAT,
     LEAVEGROUPCHAT,
     UPDATEPROFILE,

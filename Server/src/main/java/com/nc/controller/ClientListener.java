@@ -251,7 +251,7 @@ public class ClientListener extends Thread {
         //send online users current user's status
         Message offlineMsg = new Message();
         offlineMsg.setStatus("offline");
-        offlineMsg.setType(MessageType.MSG);
+        offlineMsg.setType(MessageType.OFFLINE);
         if (getUser() != null) {
             offlineMsg.setFrom(getUser().getLogin());
             for(ClientListener listener: listenerList) {
@@ -360,7 +360,7 @@ public class ClientListener extends Thread {
                 if (!login.equals(listener.getUser().getLogin())) {
                     Message onlineMsg1 = new Message();
                     onlineMsg1.setStatus("online");
-                    onlineMsg1.setType(MessageType.MSG);
+                    onlineMsg1.setType(MessageType.ONLINE);
                     onlineMsg1.setFrom(listener.getUser().getLogin());
                     send(onlineMsg1);
                 }
@@ -371,8 +371,7 @@ public class ClientListener extends Thread {
     private void sendOnlineUsersCurrUserStatus(String login, List<ClientListener> listenerList) throws IOException {
         Message onlineMsg = new Message();
         onlineMsg.setStatus("online");
-        onlineMsg.setType(MessageType.MSG);
-        //onlineMsg.setFrom(getUser().getLogin());
+        onlineMsg.setType(MessageType.ONLINE);
         onlineMsg.setFrom(login);
         for(ClientListener listener: listenerList) {
             if (listener.getUser() != null && !login.equals(listener.getUser().getLogin())) {

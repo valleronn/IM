@@ -270,24 +270,33 @@ public class ClientController {
                 Message message = messageController.extractMessage(line);
                 String msgType = message.getType().toString();
                 String msgStatus = message.getStatus();
-                if (message != null) {
-                    if ("online".equalsIgnoreCase(msgStatus)) {
-                        handleOnline(message);
-                    } else if ("offline".equalsIgnoreCase(msgStatus)) {
-                        handleOffline(message);
-                    } else if ("msg".equalsIgnoreCase(msgType)) {
-                        handleMessage(message);
-                    } else if ("Profile updated".equalsIgnoreCase(msgStatus)) {
-                        System.out.println("Profile has been updated");
-                        setProfileUpdated(true);
-                    } else if ("invitation".equalsIgnoreCase(msgStatus)) {
-                        handleInvitation(message);
-                    } else if ("removed from chat".equalsIgnoreCase(msgStatus)) {
-                        handleRemoveFromChat(message);
-                    } else if ("banned".equalsIgnoreCase(msgStatus)) {
-                        handleBanned();
-                    } else if ("unbanned".equalsIgnoreCase(msgStatus)) {
-                        handleUnBanned();
+                if (msgType != null && "MSG".equals(msgType)) {
+                    handleMessage(message);
+                }
+                if (msgStatus != null) {
+                    switch (msgStatus) {
+                        case "online":
+                            handleOnline(message);
+                            break;
+                        case "offline":
+                            handleOffline(message);
+                            break;
+                        case "Profile updated":
+                            System.out.println("Profile has been updated");
+                            setProfileUpdated(true);
+                            break;
+                        case "invitation":
+                            handleInvitation(message);
+                            break;
+                        case "removed from chat":
+                            handleRemoveFromChat(message);
+                            break;
+                        case "banned":
+                            handleBanned();
+                            break;
+                        case "unbanned":
+                            handleUnBanned();
+                            break;
                     }
                 }
             }
