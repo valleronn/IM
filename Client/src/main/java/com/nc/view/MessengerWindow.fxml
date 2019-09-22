@@ -34,7 +34,7 @@
                                                 <Insets top="5.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Button mnemonicParsing="false" onAction="#createNewChatHandler" text="+ Chat">
+                                          <Button fx:id="createNewChatButton" mnemonicParsing="false" onAction="#createNewChatHandler" text="+ Chat" visible="false">
                                              <HBox.margin>
                                                 <Insets />
                                              </HBox.margin>

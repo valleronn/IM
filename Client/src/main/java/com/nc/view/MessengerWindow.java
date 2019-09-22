@@ -29,6 +29,8 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     @FXML
     private Label fullName;
     @FXML
+    private Button createNewChatButton;
+    @FXML
     private Label contactNameLabel;
     @FXML
     private TextArea chatTextArea;
@@ -65,6 +67,9 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     public void setUser(User user) {
         this.user = user;
         fullName.setText(user.getLogin());
+        if (user.getLogin().equals("admin")) {
+            createNewChatButton.setVisible(true);
+        }
     }
 
     public void setClientApp(ClientApp clientApp) {
