@@ -171,7 +171,7 @@ public class ClientListener extends Thread {
         removeMessage.setStatus("removed from chat");
         if (server.isAdmin(user)) {
             Admin admin = (Admin) user;
-            admin.removeUserFromGroupChat(recipient);
+            admin.removeUserFromGroupChat(recipient, server.getChatRooms());
         }
         for(ClientListener listener: server.getListenerList()) {
             if (listener.isMemberOfChat(sender)
@@ -189,7 +189,7 @@ public class ClientListener extends Thread {
         banMessage.setStatus("banned");
         if (server.isAdmin(user)) {
             Admin admin = (Admin) user;
-            admin.addToBanList(recipient);
+            admin.addToBanList(server.getUser(recipient));
         }
         for (ClientListener listener: server.getListenerList()) {
             if (listener.getUser().getLogin().equals(recipient)) {
@@ -206,7 +206,7 @@ public class ClientListener extends Thread {
         unBanMessage.setStatus("unbanned");
         if (server.isAdmin(user)) {
             Admin admin = (Admin) user;
-            admin.removeFromBanList(recipient);
+            admin.removeFromBanList(server.getUser(recipient));
         }
         for (ClientListener listener: server.getListenerList()) {
             if (listener.getUser().getLogin().equals(recipient)) {

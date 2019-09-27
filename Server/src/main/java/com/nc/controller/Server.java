@@ -33,7 +33,7 @@ public class Server extends Thread {
         } catch (IOException e) {
             LOGGER.error("Error reading file with users: ", e);
         }
-        admin = new Admin("admin", "admin", new Date(), this, banList);
+        admin = new Admin("admin", "admin", new Date(), banList);
         users.add(admin);
     }
 
@@ -103,10 +103,6 @@ public class Server extends Thread {
             }
         }
         return currChatRomm;
-    }
-
-    public BanList getBanList() {
-        return banList;
     }
 
     public boolean isAdmin(User user) {
