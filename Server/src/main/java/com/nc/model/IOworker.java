@@ -1,5 +1,7 @@
 package com.nc.model;
 
+import com.nc.model.users.Admin;
+import com.nc.model.users.BanList;
 import com.nc.model.users.User;
 
 import java.io.*;
@@ -29,6 +31,16 @@ public class IOworker {
                 outStream.writeInt(messageListSize);
                 for (String f : t.getMessageList()) {
                     outStream.writeUTF(f);
+                }
+
+                if (t instanceof Admin) {
+                    Admin admin = (Admin) t;
+                    BanList banList = admin.getBanList();
+                    int banListSize = banList.getBanList().size();
+                    outStream.writeInt(banListSize);
+                    for (User user: banList.getBanList()) {
+                        outStream.writeUTF(user.getLogin());
+                    }
                 }
             }
 
@@ -64,14 +76,27 @@ public class IOworker {
                     messageList.add(inputStream.readUTF());
                 }
 
-                User user = new User();
-                user.setLogin(login);
-                user.setFullName(fullName);
-                user.setPassword(password);
-                user.setRegDate(regDate);
-                user.setActive(active);
-                user.setMessageList(messageList);
-                users.add(user);
+                if ("admin".equals(login)) {
+                    int banListSize = inputStream.readInt();
+                    BanList banList = new BanList();
+                    for (int l = 0; l < banListSize; l++) {
+                        User user = new User();
+                        user.setLogin(inputStream.readUTF());
+                        banList.addBan(user);
+                    }
+                    Admin admin = new Admin(login, password, regDate, banList);
+                    admin.setMessageList(messageList);
+                    users.add(admin);
+                } else {
+                    User user = new User();
+                    user.setLogin(login);
+                    user.setFullName(fullName);
+                    user.setPassword(password);
+                    user.setRegDate(regDate);
+                    user.setActive(active);
+                    user.setMessageList(messageList);
+                    users.add(user);
+                }
             }
         } finally {
             inputStream.close();

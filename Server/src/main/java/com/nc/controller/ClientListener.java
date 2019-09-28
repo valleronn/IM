@@ -4,6 +4,7 @@ import com.nc.model.IOworker;
 import com.nc.model.message.Message;
 import com.nc.model.message.MessageType;
 import com.nc.model.users.Admin;
+import com.nc.model.users.BanList;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 
@@ -276,9 +277,13 @@ public class ClientListener extends Thread {
                 return;
             }
         }
-        user = new User(login, password, new Date());
-        server.getUsers().add(user);
-
+        if ("admin".equals(login)) {
+            Admin admin = new Admin(login, password, new Date(), new BanList());
+            server.getUsers().add(admin);
+        } else {
+            user = new User(login, password, new Date());
+            server.getUsers().add(user);
+        }
         try {
             IOworker.writeBinary(server.getUsers(), USERS_DATA);
         } catch (IOException e) {

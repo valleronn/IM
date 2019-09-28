@@ -13,6 +13,10 @@ public class Admin extends User {
         this.banList = banList;
     }
 
+    public BanList getBanList() {
+        return banList;
+    }
+
     public void removeUserFromGroupChat(String login, Set<ChatRoom> chatRooms) {
         for(ChatRoom chatRoom: chatRooms) {
             ObservableList<User> usersInChat = chatRoom.getUsers();
