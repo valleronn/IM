@@ -105,7 +105,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleLeaveGroupChat(Message message) {
+    private synchronized void handleLeaveGroupChat(Message message) {
         for(ChatRoom chatRoom: server.getChatRooms()) {
             if (chatRoom.getChatName().equals(message.getBody())) {
                 server.getChatRooms().remove(chatRoom);
@@ -113,7 +113,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleJoinGroupChat(Message message) {
+    private synchronized void handleJoinGroupChat(Message message) {
         String chatRoomName = message.getBody();
         if (server.chatExists(chatRoomName)) {
             ChatRoom chatRoom = server.getChatRoomByName(chatRoomName);
@@ -126,7 +126,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleInviteUserToChat(Message message) throws IOException {
+    private synchronized void handleInviteUserToChat(Message message) throws IOException {
         String sender = message.getFrom();
         String recipient = message.getTo();
         Message inviteMessage = new Message();
@@ -141,7 +141,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleInviteUserToGroupChat(Message message) throws IOException {
+    private synchronized void handleInviteUserToGroupChat(Message message) throws IOException {
         String sender = message.getFrom();
         String recipients = message.getTo();
         Message inviteMessage = new Message();
@@ -162,7 +162,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleRemoveUserFromGroupChat(Message message) throws IOException {
+    private synchronized void handleRemoveUserFromGroupChat(Message message) throws IOException {
         String sender = message.getFrom();
         String recipient = message.getTo();
         Message removeMessage = new Message();
@@ -182,7 +182,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleBanUser(Message message) throws IOException {
+    private synchronized void handleBanUser(Message message) throws IOException {
         String recipient = message.getTo();
         Message banMessage = new Message();
         banMessage.setTo(recipient);
@@ -199,7 +199,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleUnBanUser(Message message) throws IOException {
+    private synchronized void handleUnBanUser(Message message) throws IOException {
         String recipient = message.getTo();
         Message unBanMessage = new Message();
         unBanMessage.setTo(recipient);
@@ -226,7 +226,7 @@ public class ClientListener extends Thread {
         return result;
     }
 
-    private void handleMessage(Message message) throws IOException {
+    private synchronized void handleMessage(Message message) throws IOException {
         String sendTo = message.getTo();
         boolean isGroupMessage = sendTo.startsWith("#");
         List<ClientListener> listenerList = server.getListenerList();
@@ -245,7 +245,7 @@ public class ClientListener extends Thread {
 
     }
 
-    private void handleLogOff() throws IOException {
+    private synchronized void handleLogOff() throws IOException {
         server.removeListener(this);
         List<ClientListener> listenerList = server.getListenerList();
         //send online users current user's status
@@ -264,7 +264,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleRegister(OutputStream outputStream, Message message) throws IOException {
+    private synchronized void handleRegister(OutputStream outputStream, Message message) throws IOException {
         String login = message.getFrom();
         String password = message.getBody();
         for(User user: server.getUsers()) {
@@ -300,7 +300,7 @@ public class ClientListener extends Thread {
         sendOnlineUsersCurrUserStatus(login, listenerList);
     }
 
-    private void handleLogin(OutputStream outputStream, Message message) throws IOException {
+    private synchronized void handleLogin(OutputStream outputStream, Message message) throws IOException {
         String login = message.getFrom();
         String password = message.getBody();
         boolean userExists = false;
@@ -329,7 +329,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void handleUpdateProfile(OutputStream outputStream, Message message) throws IOException {
+    private synchronized void handleUpdateProfile(OutputStream outputStream, Message message) throws IOException {
         String newLogin = message.getTo();
         String password = message.getBody();
         boolean credentialsExist = false;
@@ -358,7 +358,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void sendCurrUserAllOtherLogins(String login, List<ClientListener> listenerList) throws IOException {
+    private synchronized void sendCurrUserAllOtherLogins(String login, List<ClientListener> listenerList) throws IOException {
         for(ClientListener listener: listenerList) {
             if (listener.getUser() != null && !login.equals(listener.getUser().getLogin())) {
                 Message onlineMsg1 = new Message();
@@ -370,7 +370,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void sendOnlineUsersCurrUserStatus(String login, List<ClientListener> listenerList) throws IOException {
+    private synchronized void sendOnlineUsersCurrUserStatus(String login, List<ClientListener> listenerList) throws IOException {
         Message onlineMsg = new Message();
         onlineMsg.setStatus("online");
         onlineMsg.setType(MessageType.ONLINE);
@@ -382,7 +382,7 @@ public class ClientListener extends Thread {
         }
     }
 
-    private void send(Message msg) throws IOException {
+    private synchronized void send(Message msg) throws IOException {
         if (user.getLogin() != null) {
             outputStream.write(messageController.createMessage(msg).getBytes());
         }
