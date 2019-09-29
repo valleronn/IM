@@ -10,6 +10,7 @@ import com.nc.model.users.User;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -38,69 +39,73 @@ public class ClientListener extends Thread {
 
     @Override
     public void run() {
+        handleClientConnection();
+    }
+
+    private void handleClientConnection() {
+        BufferedReader reader = null;
         try {
-            handleClientConnection();
+            this.inputStream = clientSocket.getInputStream();
+            this.outputStream = clientSocket.getOutputStream();
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            logoffhappened: while ((line = reader.readLine()) != null) {
+                String msgType = messageController.extractMessage(line).getType().toString();
+                Message message = messageController.extractMessage(line);
+                if (msgType != null) {
+                    switch (msgType) {
+                        case "LOGOFF":
+                            handleLogOff();
+                            break logoffhappened;
+                        case "MSG":
+                            handleMessage(message);
+                            break;
+                        case "JOINGROUPCHAT":
+                            handleJoinGroupChat(message);
+                            break;
+                        case "LEAVEGROUPCHAT":
+                            handleLeaveGroupChat(message);
+                            break;
+                        case "REGISTER":
+                            handleRegister(outputStream, message);
+                            break;
+                        case "LOGIN":
+                            handleLogin(outputStream, message);
+                            break;
+                        case "UPDATEPROFILE":
+                            handleUpdateProfile(outputStream, message);
+                            break;
+                        case "INVITEUSERTOCHAT":
+                            handleInviteUserToChat(message);
+                            break;
+                        case "INVITEUSERSTOGROUPCHAT":
+                            handleInviteUserToGroupChat(message);
+                            break;
+                        case "REMOVEUSERFROMGROUPCHAT":
+                            handleRemoveUserFromGroupChat(message);
+                            break;
+                        case "ADDTOBANLIST":
+                            handleBanUser(message);
+                            break;
+                        case "REMOVEFROMBANLIST":
+                            handleUnBanUser(message);
+                            break;
+                        default:
+                            String msg = "Unknown " + msgType + "\n";
+                            outputStream.write(msg.getBytes());
+                    }
+                }
+            }
         } catch (IOException e) {
             LOGGER.error("handleClientConnection error: ", e);
         } finally {
             try {
+                reader.close();
                 clientSocket.close();
-            } catch (IOException e) {
+            } catch (SocketException e) {
                 LOGGER.error("Fails to close clientSocket properly: ", e);
-            }
-        }
-    }
-
-    private void handleClientConnection() throws IOException {
-        this.inputStream = clientSocket.getInputStream();
-        this.outputStream = clientSocket.getOutputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        logoffhappened: while ((line = reader.readLine()) != null) {
-            String msgType = messageController.extractMessage(line).getType().toString();
-            Message message = messageController.extractMessage(line);
-            if (msgType != null) {
-                switch (msgType) {
-                    case "LOGOFF":
-                        handleLogOff();
-                        break logoffhappened;
-                    case "MSG":
-                        handleMessage(message);
-                        break;
-                    case "JOINGROUPCHAT":
-                        handleJoinGroupChat(message);
-                        break;
-                    case "LEAVEGROUPCHAT":
-                        handleLeaveGroupChat(message);
-                        break;
-                    case "REGISTER":
-                        handleRegister(outputStream, message);
-                        break;
-                    case "LOGIN":
-                        handleLogin(outputStream, message);
-                        break;
-                    case "UPDATEPROFILE":
-                        handleUpdateProfile(outputStream, message);
-                        break;
-                    case "INVITEUSERTOCHAT":
-                        handleInviteUserToChat(message);
-                        break;
-                    case "INVITEUSERSTOGROUPCHAT":
-                        handleInviteUserToGroupChat(message);
-                        break;
-                    case "REMOVEUSERFROMGROUPCHAT":
-                        handleRemoveUserFromGroupChat(message);
-                        break;
-                    case "ADDTOBANLIST":
-                        handleBanUser(message);
-                        break;
-                    case "REMOVEFROMBANLIST":
-                        handleUnBanUser(message);
-                        break;
-                    default:
-                        String msg = "Unknown " + msgType + "\n";
-                        outputStream.write(msg.getBytes());
-                }
+            } catch (IOException e) {
+                LOGGER.error("Fails to close connection properly: ", e);
             }
         }
     }

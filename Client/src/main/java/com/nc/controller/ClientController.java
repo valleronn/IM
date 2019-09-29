@@ -5,6 +5,7 @@ import com.nc.model.message.MessageType;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import com.nc.model.users.User;
@@ -57,6 +58,7 @@ public class ClientController {
             return true;
         } catch (IOException e) {
             LOGGER.error("Connection to server error: ", e);
+            closeConnection();
         }
         return false;
     }
@@ -151,6 +153,7 @@ public class ClientController {
         logoffMessage.setType(MessageType.LOGOFF);
         String cmd = messageController.createMessage(logoffMessage);
         outputStream.write(cmd.getBytes());
+        closeConnection();
     }
 
     /**
@@ -302,13 +305,20 @@ public class ClientController {
                     }
                 }
             }
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             LOGGER.error("ReadMessage exception: ", ex);
-            try {
-                socket.close();
-            } catch (IOException e) {
-                LOGGER.error("ReadMessage (I/O): ", e);
-            }
+            closeConnection();
+        }
+    }
+
+    private void closeConnection() {
+        try {
+            bufferedIn.close();
+            socket.close();
+        } catch (SocketException s) {
+            LOGGER.error("Failed to close socket properly: ", s);
+        } catch (IOException e) {
+            LOGGER.error("Failed to close connection properly: ", e);
         }
     }
 

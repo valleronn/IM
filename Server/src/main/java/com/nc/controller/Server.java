@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.*;
 import org.apache.log4j.Logger;
 
@@ -42,6 +43,8 @@ public class Server extends Thread {
                 listenerList.add(clientListener);
                 clientListener.start();
             }
+        } catch (SocketException s) {
+            LOGGER.error("Server socket error: ", s);
         } catch (IOException e) {
             LOGGER.error("Server start error: ", e);
         }
