@@ -308,30 +308,46 @@ public class ClientListener extends Thread {
     private synchronized void handleLogin(OutputStream outputStream, Message message) throws IOException {
         String login = message.getFrom();
         String password = message.getBody();
-        boolean userExists = false;
-        for(User user: server.getUsers()) {
-            if (login.equals((user.getLogin()))
-                && password.equals(user.getPassword())) {
-                userExists = true;
-                this.user = user;
 
-            }
-        }
-        if (userExists) {
+        if (!userConnected(login) && userExists(login, password)) {
             Message msg = new Message();
             msg.setStatus("Login successful");
             outputStream.write(messageController.createMessage(msg).getBytes());
             System.out.println("User logged in successfully: " + login);
-
             List<ClientListener> listenerList = server.getListenerList();
             sendCurrUserAllOtherLogins(login, listenerList);
             sendOnlineUsersCurrUserStatus(login, listenerList);
         } else {
-            Message msg = new Message();
-            msg.setStatus("Error login");
-            outputStream.write(messageController.createMessage(msg).getBytes());
-            System.err.println("Login failed for " + login);
+            errorLoginMsg(login);
+            server.removeListener(this);
         }
+    }
+
+    private boolean userExists(String login, String password) {
+        for(User user: server.getUsers()) {
+            if (login.equals((user.getLogin()))
+                    && password.equals(user.getPassword())) {
+                this.user = user;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean userConnected(String login) {
+        for(ClientListener listener: server.getListenerList()) {
+            if (listener.getUser() != null && listener.getUser().getLogin().equals(login)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void errorLoginMsg(String login) throws IOException {
+        Message msg = new Message();
+        msg.setStatus("Error login");
+        outputStream.write(messageController.createMessage(msg).getBytes());
+        System.err.println("Login failed for " + login);
     }
 
     private synchronized void handleUpdateProfile(OutputStream outputStream, Message message) throws IOException {

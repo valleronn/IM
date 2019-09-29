@@ -42,7 +42,7 @@ public class EditProfileDialog {
 
     /**
      * Returns true if Add clicked, otherwise false
-     * @return
+     * @return returns saveClicked
      */
     public boolean isSaveClicked() {
         return saveClicked;
@@ -68,7 +68,7 @@ public class EditProfileDialog {
                 warningLabel.setVisible(true);
             }
         } else {
-            warningLabel.setText("Login or password can't be empty");
+            warningLabel.setText("Login can't be changed and the fields can't be empty");
             warningLabel.setVisible(true);
         }
     }
@@ -81,6 +81,8 @@ public class EditProfileDialog {
         boolean result = true;
         byte[] passwordFieldBytes = passwordField.getText().getBytes();
         if (passwordFieldBytes.length == 0 || loginField.getText().equals("")) {
+            result = false;
+        } else if (!loginField.getText().equals(user.getLogin())) {
             result = false;
         }
         return result;
