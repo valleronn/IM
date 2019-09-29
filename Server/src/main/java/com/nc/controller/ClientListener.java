@@ -26,6 +26,8 @@ public class ClientListener extends Thread {
     private MessageController messageController;
     private OutputStream outputStream;
     private InputStream inputStream;
+    private String sender;
+    private String recipient;
 
     public ClientListener(Server server, Socket clientSocket) {
         this.server = server;
@@ -132,8 +134,8 @@ public class ClientListener extends Thread {
     }
 
     private synchronized void handleInviteUserToChat(Message message) throws IOException {
-        String sender = message.getFrom();
-        String recipient = message.getTo();
+        sender = message.getFrom();
+        recipient = message.getTo();
         Message inviteMessage = new Message();
         inviteMessage.setType(MessageType.INVITEUSERTOCHAT);
         inviteMessage.setStatus("invitation");
@@ -147,7 +149,7 @@ public class ClientListener extends Thread {
     }
 
     private synchronized void handleInviteUserToGroupChat(Message message) throws IOException {
-        String sender = message.getFrom();
+        sender = message.getFrom();
         String recipients = message.getTo();
         Message inviteMessage = new Message();
         inviteMessage.setType(MessageType.INVITEUSERSTOGROUPCHAT);
@@ -168,8 +170,8 @@ public class ClientListener extends Thread {
     }
 
     private synchronized void handleRemoveUserFromGroupChat(Message message) throws IOException {
-        String sender = message.getFrom();
-        String recipient = message.getTo();
+        sender = message.getFrom();
+        recipient = message.getTo();
         Message removeMessage = new Message();
         removeMessage.setFrom(sender);
         removeMessage.setTo(recipient);
@@ -188,7 +190,7 @@ public class ClientListener extends Thread {
     }
 
     private synchronized void handleBanUser(Message message) throws IOException {
-        String recipient = message.getTo();
+        recipient = message.getTo();
         Message banMessage = new Message();
         banMessage.setTo(recipient);
         banMessage.setType(MessageType.ADDTOBANLIST);
@@ -205,7 +207,7 @@ public class ClientListener extends Thread {
     }
 
     private synchronized void handleUnBanUser(Message message) throws IOException {
-        String recipient = message.getTo();
+        recipient = message.getTo();
         Message unBanMessage = new Message();
         unBanMessage.setTo(recipient);
         unBanMessage.setType(MessageType.ADDTOBANLIST);
