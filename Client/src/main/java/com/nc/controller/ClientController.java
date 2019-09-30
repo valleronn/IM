@@ -28,7 +28,13 @@ public class ClientController {
     private MessageController messageController;
     private List<MessageListener> messageListeners = new ArrayList<>();
     private List<UserStatusListener> userStatusListeners = new ArrayList<>();
+    private List<ServerListener> serverListeners = new ArrayList<>();
     private boolean profileUpdated;
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public boolean isProfileUpdated() {
         return profileUpdated;
@@ -57,10 +63,10 @@ public class ClientController {
             this.bufferedIn = new BufferedReader(new InputStreamReader(inputStream));
             return true;
         } catch (IOException e) {
-            LOGGER.error("Connection to server error: ", e);
+            LOGGER.error("Server is not available. Failed to connect.");
             closeConnection();
+            return false;
         }
-        return false;
     }
 
     /**
@@ -271,7 +277,7 @@ public class ClientController {
     private void readMessage() {
         try {
             String line;
-            while ((line = bufferedIn.readLine()) != null) {
+            while (socket.isConnected() && (line = bufferedIn.readLine()) != null) {
                 Message message = messageController.extractMessage(line);
                 String msgType = message.getType().toString();
                 String msgStatus = message.getStatus();
@@ -307,18 +313,54 @@ public class ClientController {
             }
         } catch (IOException ex) {
             LOGGER.error("ReadMessage exception: ", ex);
+            handleServerOffline();
             closeConnection();
+            reconnect(user.getLogin(), user.getPassword());
+            handleServerOnline();
         }
     }
 
     private void closeConnection() {
         try {
-            bufferedIn.close();
-            socket.close();
+            if (bufferedIn != null && socket != null) {
+                bufferedIn.close();
+                socket.close();
+            }
         } catch (SocketException s) {
             LOGGER.error("Failed to close socket properly: ", s);
         } catch (IOException e) {
             LOGGER.error("Failed to close connection properly: ", e);
+        }
+    }
+
+    private synchronized void reconnect(String login, String password) {
+        while (true) {
+            LOGGER.info("Attempting to reconnect...");
+            if (connect()) {
+                try {
+                    login(login, password);
+                } catch (IOException e) {
+                    LOGGER.error("Failed to reconnect");
+                }
+                return;
+            }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                LOGGER.error("Thread sleep failed", e);
+            }
+        }
+    }
+
+    private synchronized void handleServerOffline() {
+        for(ServerListener listener: serverListeners) {
+            listener.serverOffline();
+        }
+    }
+
+    private synchronized void handleServerOnline() {
+        for(ServerListener listener: serverListeners) {
+            listener.serverOnline();
         }
     }
 
@@ -379,5 +421,9 @@ public class ClientController {
 
     public synchronized void addMessageListener(MessageListener listener) {
         messageListeners.add(listener);
+    }
+
+    public synchronized void addServerListener(ServerListener listener) {
+        serverListeners.add(listener);
     }
 }

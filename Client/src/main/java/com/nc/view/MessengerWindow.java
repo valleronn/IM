@@ -3,6 +3,7 @@ package com.nc.view;
 import com.nc.ClientApp;
 import com.nc.controller.ClientController;
 import com.nc.controller.MessageListener;
+import com.nc.controller.ServerListener;
 import com.nc.controller.UserStatusListener;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
@@ -22,7 +23,8 @@ import org.apache.log4j.Logger;
 /**
  * Represents MessengerWindow class
  */
-public class MessengerWindow implements UserStatusListener, MessageListener {
+public class MessengerWindow implements UserStatusListener,
+                                MessageListener, ServerListener {
 
     private final static Logger LOGGER = Logger.getLogger(MessengerWindow.class);
 
@@ -82,6 +84,8 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
         this.client = client;
         this.client.addUserStatusListener(this);
         this.client.addMessageListener(this);
+        this.client.addServerListener(this);
+        this.client.setUser(user);
         client.messageReader();
     }
 
@@ -321,7 +325,9 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
     public void online(String user) {
         User newUser = new User();
         newUser.setLogin(user);
-        clientApp.getUsers().add(newUser);
+        if (!clientApp.getUsers().contains(newUser)) {
+            clientApp.getUsers().add(newUser);
+        }
         if (myContactsList.getItems().contains(newUser)) {
             selectUser();
         }
@@ -494,5 +500,37 @@ public class MessengerWindow implements UserStatusListener, MessageListener {
             user.setBanned(false);
             makeChatElementsVisible(true);
         });
+    }
+
+    /**
+     * Shows an alert when server goes offline
+     */
+    @Override
+    public void serverOffline() {
+        Platform.runLater(() -> {
+            makeChatElementsVisible(false);
+            String alertTitle = "Server is currently offline";
+            contactNameLabel.setText(alertTitle);
+            showInfoAlert(alertTitle, alertTitle);
+        });
+    }
+
+    /**
+     * Shows an alert when server goes back online
+     */
+    @Override
+    public void serverOnline() {
+        Platform.runLater(() -> {
+            if (myChatList.getSelectionModel().isEmpty()
+                    || myContactsList.getSelectionModel().isEmpty()) {
+                contactNameLabel.setText("");
+            } else {
+                makeChatElementsVisible(true);
+                contactNameLabel.setText(selectedContact.getLogin());
+            }
+            String alertTitle = "Server is back";
+            showInfoAlert(alertTitle, alertTitle);
+        });
+        client.messageReader();
     }
 }
