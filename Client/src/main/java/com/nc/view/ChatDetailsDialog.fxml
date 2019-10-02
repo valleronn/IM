@@ -8,8 +8,7 @@
       <ListView fx:id="chatList" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="40.0" />
       <VBox spacing="10.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="40.0">
          <children>
-            <Label fx:id="statusLabel" text="Status:" visible="false" />
-            <Label fx:id="onlineLabel" text="Label" />
+            <Label fx:id="statusLabel" text="Ban Status:" />
             <Label fx:id="banLabel" text="Banned" />
          </children>
       </VBox>

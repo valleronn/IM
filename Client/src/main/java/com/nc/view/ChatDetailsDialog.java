@@ -18,8 +18,6 @@ public class ChatDetailsDialog {
     @FXML
     private Label statusLabel;
     @FXML
-    private Label onlineLabel;
-    @FXML
     private Label banLabel;
     @FXML
     private Label warningLabel;
@@ -78,13 +76,10 @@ public class ChatDetailsDialog {
      * @param contactUser contactUser parameter
      */
     private void showUserDetails(User contactUser) {
-        if (contactUser != null) {
-            statusLabel.setVisible(true);
-            onlineLabel.setText("Online");
+        if (contactUser != null && contactUser.isBanned()) {
+            banLabel.setVisible(true);
         } else {
-            statusLabel.setText("");
-            onlineLabel.setText("");
-            banLabel.setText("");
+            banLabel.setVisible(false);
         }
     }
 
@@ -134,6 +129,7 @@ public class ChatDetailsDialog {
         if (user != null) {
             banLabel.setVisible(true);
             banLabel.setText("Banned");
+            user.setBanned(true);
             client.banUser(user.getLogin());
         } else {
             warningLabel.setVisible(true);
@@ -149,6 +145,7 @@ public class ChatDetailsDialog {
         User user = chatList.getSelectionModel().getSelectedItem();
         if (user != null) {
             banLabel.setVisible(false);
+            user.setBanned(false);
             client.unBanUser(user.getLogin());
         } else {
             warningLabel.setVisible(true);
