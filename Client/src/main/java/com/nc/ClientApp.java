@@ -45,7 +45,7 @@ public class ClientApp extends Application {
         ConfigReader configReader = new ConfigReader();
         this.serverName = configReader.getIp();
         this.port = configReader.getPort();
-        client = new ClientController(serverName, port);
+        client = new ClientController(serverName, port, this);
     }
 
     public ObservableList<User> getUsers() {
@@ -54,6 +54,14 @@ public class ClientApp extends Application {
 
     public ObservableList<User> getMyContacts() {
         return myContacts;
+    }
+
+    public void setMyContacts(ObservableList<User> myContacts) {
+        this.myContacts = myContacts;
+    }
+
+    public void setMyChatContacts(ObservableList<User> myChatContacts) {
+        this.myChatContacts = myChatContacts;
     }
 
     public ObservableList<User> getMyChatContacts() {

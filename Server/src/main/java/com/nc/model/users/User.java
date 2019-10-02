@@ -1,9 +1,9 @@
 package com.nc.model.users;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.util.*;
 
 public class User {
     private String login;
@@ -13,6 +13,7 @@ public class User {
     private boolean active;
     private boolean banned;
     private List<String> messageList = new LinkedList<>();
+    private ObservableList<User> myContacts = FXCollections.observableArrayList();
 
     public User() {
     }
@@ -38,6 +39,10 @@ public class User {
 
     public List<String> getMessageList() {
         return messageList;
+    }
+
+    public ObservableList<User> getMyContacts() {
+        return myContacts;
     }
 
     public String getFullName() {

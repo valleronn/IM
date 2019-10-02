@@ -21,7 +21,7 @@ public class Server extends Thread {
     private int port;
     private List<ClientListener> listenerList = new ArrayList<>();
     private Set<User> users = new HashSet<>();
-    private Set<ChatRoom> chatRooms = new HashSet<>();
+    private List<ChatRoom> chatRooms = new ArrayList<>();
 
     public Server(int port) {
         this.port = port;
@@ -73,7 +73,7 @@ public class Server extends Thread {
         return currentUser;
     }
 
-    public Set<ChatRoom> getChatRooms() {
+    public List<ChatRoom> getChatRooms() {
         return chatRooms;
     }
 

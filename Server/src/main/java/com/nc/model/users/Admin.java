@@ -1,7 +1,7 @@
 package com.nc.model.users;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javafx.collections.ObservableList;
 
@@ -17,7 +17,7 @@ public class Admin extends User {
         return banList;
     }
 
-    public void removeUserFromGroupChat(String login, Set<ChatRoom> chatRooms) {
+    public void removeUserFromGroupChat(String login, List<ChatRoom> chatRooms) {
         for(ChatRoom chatRoom: chatRooms) {
             ObservableList<User> usersInChat = chatRoom.getUsers();
             usersInChat.removeIf(user -> (user.getLogin().equals(login)));

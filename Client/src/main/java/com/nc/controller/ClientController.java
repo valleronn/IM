@@ -1,5 +1,6 @@
 package com.nc.controller;
 
+import com.nc.ClientApp;
 import com.nc.model.message.Message;
 import com.nc.model.message.MessageType;
 
@@ -8,6 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
+import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import javafx.collections.ObservableList;
 import org.apache.log4j.Logger;
@@ -31,6 +33,7 @@ public class ClientController {
     private List<ServerListener> serverListeners = new ArrayList<>();
     private boolean profileUpdated;
     private User user;
+    private ClientApp clientApp;
 
     public void setUser(User user) {
         this.user = user;
@@ -44,9 +47,10 @@ public class ClientController {
         this.profileUpdated = profileUpdated;
     }
 
-    public ClientController(String serverName, int serverPort) {
+    public ClientController(String serverName, int serverPort, ClientApp clientApp) {
         this.serverName = serverName;
         this.serverPort = serverPort;
+        this.clientApp = clientApp;
         messageController = new MessageController();
     }
 
@@ -134,6 +138,65 @@ public class ClientController {
     }
 
     /**
+     * Sends REQUESTCONTACTS message
+     * @throws IOException throws IOException
+     */
+    public void requestContacts() throws IOException {
+        requestUserData(MessageType.REQUESTCONTACTS);
+    }
+
+    /**
+     * Sends REQUESTGROUPCHATS message
+     * @throws IOException throws IOException
+     */
+    public void requestChats() throws IOException {
+        requestUserData(MessageType.REQUESTGROUPCHATS);
+    }
+
+    /**
+     * Sends REQUESTGROUPCHATCONTACTS message
+     * @throws IOException throws IOException
+     */
+    public void requestGroupChatContacts() throws IOException {
+        for(User user: clientApp.getMyChatContacts()) {
+            if (user.getLogin().startsWith("#")) {
+                requestChatData(MessageType.REQUESTGROUPCHATCONTACTS, user.getLogin());
+            }
+        }
+    }
+
+    /**
+     * Sends REQUESTBANLIST message
+     * @throws IOException throws IOException
+     */
+    public void requestBanList() throws IOException {
+        requestUserData(MessageType.REQUESTBANLIST);
+    }
+
+    /**
+     * Sends a message depending on a MessageType
+     * @throws IOException throws IOException
+     */
+    private void requestChatData(MessageType messageType, String chatName) throws IOException {
+        Message message = new Message();
+        message.setType(messageType);
+        message.setFrom(chatName);
+        String cmd = messageController.createMessage(message);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
+     * Sends a message depending on a MessageType
+     * @throws IOException throws IOException
+     */
+    private void requestUserData(MessageType messageType) throws IOException {
+        Message message = new Message();
+        message.setType(messageType);
+        String cmd = messageController.createMessage(message);
+        outputStream.write(cmd.getBytes());
+    }
+
+    /**
      * Sends update profile message
      * @param login initial login
      * @param newLogin new login
@@ -198,10 +261,28 @@ public class ClientController {
      * @throws IOException throws IOException
      */
     public void joinGroupChat(String chatName) throws IOException {
-        Message joinGroupChatMessage = new Message();
-        joinGroupChatMessage.setType(MessageType.JOINGROUPCHAT);
-        joinGroupChatMessage.setBody(chatName);
-        String cmd = messageController.createMessage(joinGroupChatMessage);
+        leaveOrJoinChat(chatName, MessageType.JOINGROUPCHAT);
+    }
+
+    /**
+     * Sends JOINCHAT message
+     * @throws IOException throws IOException
+     */
+    public void joinSingleChat(String contact) throws IOException {
+        leaveOrJoinChat(contact, MessageType.JOINCHAT);
+    }
+
+    /**
+     * Joins or leaves chat depending on a MessageType
+     * @param contact contact
+     * @param messageType messageType
+     * @throws IOException throws IOException
+     */
+    private void leaveOrJoinChat(String contact, MessageType messageType) throws IOException {
+        Message joinChatMessage = new Message();
+        joinChatMessage.setType(messageType);
+        joinChatMessage.setBody(contact);
+        String cmd = messageController.createMessage(joinChatMessage);
         outputStream.write(cmd.getBytes());
     }
 
@@ -210,11 +291,15 @@ public class ClientController {
      * @throws IOException throws IOException
      */
     public void leaveGroupChat(String chatName) throws IOException {
-        Message leaveGroupChatMessage = new Message();
-        leaveGroupChatMessage.setType(MessageType.LEAVEGROUPCHAT);
-        leaveGroupChatMessage.setBody(chatName);
-        String cmd = messageController.createMessage(leaveGroupChatMessage);
-        outputStream.write(cmd.getBytes());
+        leaveOrJoinChat(chatName, MessageType.LEAVEGROUPCHAT);
+    }
+
+    /**
+     * Sends LEAVEGROUPCHAT message
+     * @throws IOException throws IOException
+     */
+    public void leaveSingleChat(String contact) throws IOException {
+        leaveOrJoinChat(contact, MessageType.LEAVECHAT);
     }
 
     /**
@@ -307,6 +392,18 @@ public class ClientController {
                             break;
                         case "unbanned":
                             handleUnBanned();
+                            break;
+                        case "Contacts sent":
+                            handleGetContacts(message);
+                            break;
+                        case "Banlist sent":
+                            handleGetBanlist(message);
+                            break;
+                        case "Chats sent":
+                            handleGetChats(message);
+                            break;
+                        case "GroupChat contacts sent":
+                            handleGetGroupChatContacts(message);
                             break;
                     }
                 }
@@ -412,6 +509,39 @@ public class ClientController {
     private synchronized void handleUnBanned() {
         for(UserStatusListener listener: userStatusListeners) {
             listener.unbanned();
+        }
+    }
+
+    private synchronized void handleGetContacts(Message message) {
+        String listOfContacts = message.getBody();
+        ObservableList<User> myContacts = messageController.extractContactsFromString(listOfContacts);
+        for (UserStatusListener listener: userStatusListeners) {
+            listener.setUserContacts(myContacts);
+        }
+    }
+
+    private synchronized void handleGetBanlist(Message message) {
+        String banList = message.getBody();
+        ObservableList<User> contacts = messageController.extractContactsFromString(banList);
+        for (UserStatusListener listener: userStatusListeners) {
+            listener.setBanList(contacts);
+        }
+    }
+
+    private synchronized void handleGetChats(Message message) {
+        String chatsList = message.getBody();
+        ObservableList<ChatRoom> myChats = messageController.extractGroupChatsFromString(chatsList);
+        for (UserStatusListener listener: userStatusListeners) {
+            listener.setUserChatRooms(myChats);
+        }
+    }
+
+    private synchronized void handleGetGroupChatContacts(Message message) {
+        String listOfContacts = message.getBody();
+        String chatName = message.getFrom();
+        ObservableList<User> groupChatContacts = messageController.extractContactsFromString(listOfContacts);
+        for (UserStatusListener listener: userStatusListeners) {
+            listener.setGroupChatContacts(chatName, groupChatContacts);
         }
     }
 

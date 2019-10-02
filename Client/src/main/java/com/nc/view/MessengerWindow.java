@@ -87,6 +87,12 @@ public class MessengerWindow implements UserStatusListener,
         this.client.addServerListener(this);
         this.client.setUser(user);
         client.messageReader();
+        try {
+            client.requestContacts();
+            client.requestChats();
+        } catch (IOException e) {
+            LOGGER.error("Fails to request user data", e);
+        }
     }
 
     public void setFullName(String login) {
@@ -257,8 +263,13 @@ public class MessengerWindow implements UserStatusListener,
                     LOGGER.error("Fails to leave " + selectedChat.getChatName() + " group chat", e);
                 }
             } else {
-                clientApp.getMyChatContacts().remove(selectedContact);
-                clientApp.getMyContacts().remove(selectedContact);
+                try {
+                    clientApp.getMyChatContacts().remove(selectedContact);
+                    clientApp.getMyContacts().remove(selectedContact);
+                    client.leaveSingleChat(selectedContact.getLogin());
+                } catch (IOException e) {
+                    LOGGER.error("Fails to leave chat with " + selectedContact.getLogin());
+                }
             }
         } else {
             selectedContact = myContactsList.getSelectionModel().getSelectedItem();
@@ -424,6 +435,11 @@ public class MessengerWindow implements UserStatusListener,
                     clientApp.getMyContacts().add(contactUser);
                     clientApp.getMyChatContacts().add(contactUser);
                     tabs.getSelectionModel().select(contactsTab);
+                    try {
+                        client.joinSingleChat(fromUser);
+                    } catch (IOException e) {
+                        LOGGER.error("Fails to join chat with " + fromUser);
+                    }
                 }
             });
         }
@@ -532,5 +548,76 @@ public class MessengerWindow implements UserStatusListener,
             showInfoAlert(alertTitle, alertTitle);
         });
         client.messageReader();
+    }
+
+    /**
+     * Sets user's contacts
+     * @param myContacts contacts to set
+     */
+    @Override
+    public void setUserContacts(ObservableList<User> myContacts) {
+        myContactsList.setItems(myContacts);
+        myChatList.setItems(myContacts);
+        clientApp.setMyChatContacts(myContacts);
+        clientApp.setMyContacts(myContacts);
+    }
+
+    /**
+     * Sets BanList
+     * @param banList BanList to set
+     */
+    @Override
+    public void setBanList(ObservableList<User> banList) {
+        for(User user: clientApp.getMyChatContacts()) {
+            if (isChatRoom(user)) {
+                ChatRoom chatRoom = (ChatRoom) user;
+                for(User groupChatContact: chatRoom.getUsers()) {
+                    for(User bannedUser: banList) {
+                        if (groupChatContact.getLogin().equals(bannedUser.getLogin())) {
+                            groupChatContact.setBanned(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Sets user's group chats
+     * @param myChats
+     */
+    @Override
+    public void setUserChatRooms(ObservableList<ChatRoom> myChats) {
+        Platform.runLater(() -> {
+            for(ChatRoom chatRoom: myChats) {
+                if (!clientApp.getMyChatContacts().contains(chatRoom)) {
+                    clientApp.getMyChatContacts().add(chatRoom);
+                }
+            }
+            myChatList.setItems(clientApp.getMyChatContacts());
+            try {
+                client.requestGroupChatContacts();
+                if (user.getLogin().equals("admin")) {
+                    client.requestBanList();
+                }
+            } catch (IOException e) {
+                LOGGER.error("Fails to request group chat data", e);
+            }
+        });
+    }
+
+    /**
+     * Sets group chat contacts
+     * @param chatName chat name
+     * @param groupChatContacts group chat contacts
+     */
+    @Override
+    public void setGroupChatContacts(String chatName, ObservableList<User> groupChatContacts) {
+        for(User user: clientApp.getMyChatContacts()) {
+            if (isChatRoom(user) && user.getLogin().equals(chatName)) {
+                ChatRoom chatRoom = (ChatRoom) user;
+                chatRoom.setUsers(groupChatContacts);
+            }
+        }
     }
 }

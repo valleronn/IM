@@ -1,5 +1,6 @@
 package com.nc.controller;
 
+import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import javafx.collections.ObservableList;
 
@@ -13,4 +14,8 @@ public interface UserStatusListener {
     void removeFromChat(String chatName);
     void banned();
     void unbanned();
+    void setUserContacts(ObservableList<User> myContacts);
+    void setBanList(ObservableList<User> banList);
+    void setUserChatRooms(ObservableList<ChatRoom> myChats);
+    void setGroupChatContacts(String chatName, ObservableList<User> groupChatContacts);
 }

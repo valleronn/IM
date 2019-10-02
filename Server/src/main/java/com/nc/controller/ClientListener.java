@@ -11,6 +11,7 @@ import com.nc.model.users.User;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -62,8 +63,14 @@ public class ClientListener extends Thread {
                         case "MSG":
                             handleMessage(message);
                             break;
+                        case "JOINCHAT":
+                            handleJoinChat(message);
+                            break;
                         case "JOINGROUPCHAT":
                             handleJoinGroupChat(message);
+                            break;
+                        case "LEAVECHAT":
+                            handleLeaveChat(message);
                             break;
                         case "LEAVEGROUPCHAT":
                             handleLeaveGroupChat(message);
@@ -73,6 +80,18 @@ public class ClientListener extends Thread {
                             break;
                         case "LOGIN":
                             handleLogin(outputStream, message);
+                            break;
+                        case "REQUESTCONTACTS":
+                            handleRequestContacts(outputStream);
+                            break;
+                        case "REQUESTBANLIST":
+                            handleRequestBanlist(outputStream);
+                            break;
+                        case "REQUESTGROUPCHATS":
+                            handleRequestChats(outputStream);
+                            break;
+                        case "REQUESTGROUPCHATCONTACTS":
+                            handleRequestGroupChatContacts(outputStream, message);
                             break;
                         case "UPDATEPROFILE":
                             handleUpdateProfile(outputStream, message);
@@ -133,6 +152,16 @@ public class ClientListener extends Thread {
         }
     }
 
+    private synchronized void handleJoinChat(Message message) {
+        String contact = message.getBody();
+        user.getMyContacts().add(server.getUser(contact));
+    }
+
+    private synchronized void handleLeaveChat(Message message) {
+        String contact = message.getBody();
+        user.getMyContacts().remove(server.getUser(contact));
+    }
+
     private synchronized void handleInviteUserToChat(Message message) throws IOException {
         sender = message.getFrom();
         recipient = message.getTo();
@@ -144,6 +173,7 @@ public class ClientListener extends Thread {
         for(ClientListener listener: server.getListenerList()) {
             if (listener.getUser().getLogin().equals(recipient)) {
                 listener.send(inviteMessage);
+                user.getMyContacts().add(listener.getUser());
             }
         }
     }
@@ -266,8 +296,17 @@ public class ClientListener extends Thread {
                     listener.send(offlineMsg);
                 }
             }
+            saveDataToFile();
             clientSocket.close();
             System.out.println(getUser().getLogin() + " has disconnected");
+        }
+    }
+
+    private void saveDataToFile() {
+        try {
+            IOworker.writeBinary(server.getUsers(), USERS_DATA);
+        } catch (IOException e) {
+            LOGGER.error("Error reading file with users: ", e);
         }
     }
 
@@ -291,11 +330,7 @@ public class ClientListener extends Thread {
             user = new User(login, password, new Date());
             server.getUsers().add(user);
         }
-        try {
-            IOworker.writeBinary(server.getUsers(), USERS_DATA);
-        } catch (IOException e) {
-            LOGGER.error("Error reading file with users: ", e);
-        }
+        saveDataToFile();
 
         Message msg = new Message();
         msg.setStatus("Registration successful");
@@ -350,6 +385,55 @@ public class ClientListener extends Thread {
         msg.setStatus("Error login");
         outputStream.write(messageController.createMessage(msg).getBytes());
         System.err.println("Login failed for " + login);
+    }
+
+    private synchronized void handleRequestContacts(OutputStream outputStream) throws IOException {
+        if (user.getMyContacts().size() > 0) {
+            Message msg = new Message();
+            msg.setType(MessageType.REQUESTCONTACTS);
+            String contacts = messageController.convertContactsToString(user.getMyContacts()).toString();
+            msg.setBody(contacts);
+            msg.setStatus("Contacts sent");
+            outputStream.write(messageController.createMessage(msg).getBytes());
+        }
+    }
+
+    private synchronized void handleRequestBanlist(OutputStream outputStream) throws IOException {
+        if (user instanceof Admin) {
+            Admin admin = (Admin) user;
+            List<User> banList = new ArrayList<>();
+            banList.addAll(admin.getBanList().getBanList());
+            String banListString = messageController.convertContactsToString(banList).toString();
+            Message msg = new Message();
+            msg.setType(MessageType.REQUESTBANLIST);
+            msg.setStatus("Banlist sent");
+            msg.setBody(banListString);
+            outputStream.write(messageController.createMessage(msg).getBytes());
+        }
+    }
+    private synchronized void handleRequestChats(OutputStream outputStream) throws IOException {
+        if (server.getChatRooms().size() > 0) {
+            Message msg = new Message();
+            msg.setType(MessageType.REQUESTGROUPCHATS);
+            String groupChats = messageController.convertContactsToString(server.getChatRooms()).toString();
+            msg.setBody(groupChats);
+            msg.setStatus("Chats sent");
+            outputStream.write(messageController.createMessage(msg).getBytes());
+        }
+    }
+
+    private synchronized void handleRequestGroupChatContacts(OutputStream outputStream, Message message)
+                                                                                        throws IOException {
+        String chatName = message.getFrom();
+        for(ChatRoom chatRoom: server.getChatRooms()) {
+            if (chatRoom.getChatName().equals(chatName)) {
+                String chatContacts = messageController.convertContactsToString(chatRoom.getUsers()).toString();
+                message.setStatus("GroupChat contacts sent");
+                message.setBody(chatContacts);
+                outputStream.write(messageController.createMessage(message).getBytes());
+            }
+        }
+
     }
 
     private synchronized void handleUpdateProfile(OutputStream outputStream, Message message) throws IOException {

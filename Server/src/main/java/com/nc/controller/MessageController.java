@@ -1,6 +1,7 @@
 package com.nc.controller;
 
 import com.nc.model.message.Message;
+import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.util.List;
 
 
 public class MessageController {
@@ -51,7 +53,7 @@ public class MessageController {
      * @param groupChatContacts ObservableList of group chat contacts
      * @return
      */
-    public StringBuilder convertContactsToString(ObservableList<User> groupChatContacts) {
+    public StringBuilder convertContactsToString(List<? extends User> groupChatContacts) {
         StringBuilder usersToString = new StringBuilder();
         for (User user: groupChatContacts) {
             if (usersToString.length() == 0) {
@@ -76,6 +78,23 @@ public class MessageController {
             User user = new User();
             user.setLogin(login);
             groupChatContacts.add(user);
+        }
+        return groupChatContacts;
+    }
+
+    /**
+     * Extracts contact users from a string separated
+     * by ";" delimiter and adds them into a collection
+     * @param listOfChats string of group chat users
+     * @return returns ObservableList of group chat users
+     */
+    public ObservableList<ChatRoom> extractGroupChatsFromString(String listOfChats) {
+        String[] chatsArr = listOfChats.split("\\;");
+        ObservableList<ChatRoom> groupChatContacts = FXCollections.observableArrayList();
+        for(String login: chatsArr) {
+            ChatRoom chatRoom = new ChatRoom();
+            chatRoom.setLogin(login);
+            groupChatContacts.add(chatRoom);
         }
         return groupChatContacts;
     }
