@@ -91,9 +91,9 @@ public class MessageController {
     public ObservableList<ChatRoom> extractGroupChatsFromString(String listOfChats) {
         String[] chatsArr = listOfChats.split("\\;");
         ObservableList<ChatRoom> groupChatContacts = FXCollections.observableArrayList();
-        for(String login: chatsArr) {
+        for(String chatName: chatsArr) {
             ChatRoom chatRoom = new ChatRoom();
-            chatRoom.setLogin(login);
+            chatRoom.setChatName(chatName);
             groupChatContacts.add(chatRoom);
         }
         return groupChatContacts;

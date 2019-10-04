@@ -4,7 +4,6 @@ import com.nc.model.IOworker;
 import com.nc.model.message.Message;
 import com.nc.model.message.MessageType;
 import com.nc.model.users.Admin;
-import com.nc.model.users.BanList;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 
@@ -386,7 +385,7 @@ public class ClientListener extends Thread {
     }
 
     private synchronized void handleRequestContacts(OutputStream outputStream) throws IOException {
-        if (user.getMyContacts().size() > 0) {
+        if (user.getMyContacts() != null && user.getMyContacts().size() > 0) {
             Message msg = new Message();
             msg.setType(MessageType.REQUESTCONTACTS);
             String contacts = messageController.convertContactsToString(user.getMyContacts()).toString();
@@ -410,10 +409,10 @@ public class ClientListener extends Thread {
         }
     }
     private synchronized void handleRequestChats(OutputStream outputStream) throws IOException {
-        if (server.getChatRooms().size() > 0) {
+        if (user.getChatRooms() != null && user.getChatRooms().size() > 0) {
             Message msg = new Message();
             msg.setType(MessageType.REQUESTGROUPCHATS);
-            String groupChats = messageController.convertContactsToString(server.getChatRooms()).toString();
+            String groupChats = messageController.convertContactsToString(user.getChatRooms()).toString();
             msg.setBody(groupChats);
             msg.setStatus("Chats sent");
             outputStream.write(messageController.createMessage(msg).getBytes());
