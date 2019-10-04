@@ -14,6 +14,7 @@ public class User {
     private boolean banned;
     private List<String> messageList = new LinkedList<>();
     private ObservableList<User> myContacts = FXCollections.observableArrayList();
+    private List<ChatRoom> chatRooms = new ArrayList<>();
 
     public User() {
     }
@@ -83,6 +84,18 @@ public class User {
 
     public void setMessageList(List<String> messageList) {
         this.messageList = messageList;
+    }
+
+    public void setMyContacts(ObservableList<User> myContacts) {
+        this.myContacts = myContacts;
+    }
+
+    public List<ChatRoom> getChatRooms() {
+        return chatRooms;
+    }
+
+    public void setChatRooms(List<ChatRoom> chatRooms) {
+        this.chatRooms = chatRooms;
     }
 
     @Override

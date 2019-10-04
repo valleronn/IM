@@ -26,7 +26,7 @@ public class Server extends Thread {
     public Server(int port) {
         this.port = port;
         try {
-            IOworker.readBinary(users, USERS_DATA);
+            IOworker.readBinary(users, chatRooms, USERS_DATA);
         } catch (IOException e) {
             LOGGER.error("Error reading file with users: ", e);
         }

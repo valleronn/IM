@@ -8,6 +8,7 @@ import com.nc.controller.UserStatusListener;
 import com.nc.model.users.ChatRoom;
 import com.nc.model.users.User;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -557,9 +558,11 @@ public class MessengerWindow implements UserStatusListener,
     @Override
     public void setUserContacts(ObservableList<User> myContacts) {
         myContactsList.setItems(myContacts);
-        myChatList.setItems(myContacts);
-        clientApp.setMyChatContacts(myContacts);
         clientApp.setMyContacts(myContacts);
+        ObservableList<User> myChatContacts = FXCollections.observableArrayList();
+        myChatContacts.addAll(myContacts);
+        myChatList.setItems(myChatContacts);
+        clientApp.setMyChatContacts(myChatContacts);
     }
 
     /**

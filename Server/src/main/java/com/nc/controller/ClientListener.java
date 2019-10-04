@@ -143,12 +143,14 @@ public class ClientListener extends Thread {
         String chatRoomName = message.getBody();
         if (server.chatExists(chatRoomName)) {
             ChatRoom chatRoom = server.getChatRoomByName(chatRoomName);
-            chatRoom.addUser(this.getUser());
+            chatRoom.addUser(user);
+            user.getChatRooms().add(chatRoom);
         } else {
             ChatRoom chatRoom = new ChatRoom();
             chatRoom.setChatName(message.getBody());
-            chatRoom.addUser(this.getUser());
+            chatRoom.addUser(user);
             server.getChatRooms().add(chatRoom);
+            user.getChatRooms().add(chatRoom);
         }
     }
 
@@ -215,6 +217,7 @@ public class ClientListener extends Thread {
             if (listener.isMemberOfChat(sender)
                     && listener.getUser().getLogin().equals(recipient)) {
                 listener.send(removeMessage);
+                listener.getUser().getChatRooms().remove(server.getChatRoomByName(sender));
             }
         }
     }
@@ -304,7 +307,7 @@ public class ClientListener extends Thread {
 
     private void saveDataToFile() {
         try {
-            IOworker.writeBinary(server.getUsers(), USERS_DATA);
+            IOworker.writeBinary(server.getUsers(), server.getChatRooms(), USERS_DATA);
         } catch (IOException e) {
             LOGGER.error("Error reading file with users: ", e);
         }
@@ -323,13 +326,8 @@ public class ClientListener extends Thread {
                 return;
             }
         }
-        if ("admin".equals(login)) {
-            Admin admin = new Admin(login, password, new Date(), new BanList());
-            server.getUsers().add(admin);
-        } else {
-            user = new User(login, password, new Date());
-            server.getUsers().add(user);
-        }
+        user = new User(login, password, new Date());
+        server.getUsers().add(user);
         saveDataToFile();
 
         Message msg = new Message();
